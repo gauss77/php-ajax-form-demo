@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 600 600"
+   focusable="false"
+   role="img"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="logo-morado-blanco-borde.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:export-filename="C:\Users\jufra\Desktop\path825.png"
+   inkscape:export-xdpi="150.005"
+   inkscape:export-ydpi="150.005"
+   width="600"
+   height="600">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Bootstrap</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     id="namedview10"
+     showgrid="false"
+     inkscape:snap-global="true"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="0.77124183"
+     inkscape:cx="175.92939"
+     inkscape:cy="313.78597"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <title
+     id="title2">Bootstrap</title>
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#7b1fa2;stroke-width:50;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+     id="rect842"
+     width="550"
+     height="550"
+     x="25"
+     y="25"
+     rx="193.19492"
+     ry="193.19492" />
+  <g
+     id="g832"
+     transform="matrix(0.91814904,0,0,0.9182945,19.046403,11.915356)"
+     style="fill:#7b1fa2;fill-opacity:1;stroke-width:1.0890615">
+    <path
+       sodipodi:nodetypes="zczcczczcccczc"
+       inkscape:connector-curvature="0"
+       id="path825"
+       d="m 319.6884,129.61594 c -89.34258,0 -184.65389,84.54486 -99.48432,207.7366 -7.60443,-95.81578 44.277,-132.45326 106.32556,-132.45326 62.04855,0 92.01327,35.73938 92.01327,35.73938 l 44.10806,-59.31291 c 0,0 -53.61998,-51.70981 -142.96257,-51.70981 z M 135.66043,303.75523 c 0,149.81918 83.0816,204.56102 190.86921,204.56102 107.78761,0 149.80991,-62.35841 149.80991,-62.35841 V 317.44382 h -83.65107 v 100.37869 c 0,0 -31.37814,21.29265 -80.60557,21.29265 -49.22741,0 -136.87945,-14.44954 -176.42248,-135.35993 z"
+       style="fill:#7b1fa2;fill-opacity:1;stroke:none;stroke-width:1.08906126px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+  </g>
+</svg>
