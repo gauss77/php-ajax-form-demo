@@ -134,7 +134,8 @@ $recordUpdateForm = new RecordUpdate();
             </div>
         </footer>
 
-        <!-- Scripts -->
+        <!-- App autoconfiguration -->
+        <script src="js/autoconf.php"></script>
 
         <!-- jQuery -->
         <script src="js/jquery-3.5.1.min.js"></script>

@@ -43,8 +43,14 @@ toast.error = (text) =>
  * Aux functions
  */
 
+/**
+ * Aux object used for namespace
+ */
 var aux = {};
 
+/**
+ * Retrieves a form's data and converts it to a JSON string
+ */
 aux.jQueryFormToJsonString = ($form) =>
 {
     var resultObject = {};
@@ -174,7 +180,7 @@ $(() => {
      */
     $('.ajax-modal form').on('submit', (e) => {
         e.preventDefault();
-
+        
         $loadingProgressBar.fadeIn();
 
         var $form = $(e.currentTarget);
@@ -192,8 +198,10 @@ $(() => {
             dataType: 'json',
             data: aux.jQueryFormToJsonString($form),
             success: (result) => {
-                console.log('.ajax-modal form submit AJAX success');
-                console.log(result);
+                if (! autoconf.APP_PRODUCTION) {
+                    console.log('.ajax-modal form submit AJAX success');
+                    console.log(result);
+                }
 
                 // TODO: update list
                 if (onSuccessEventName && onSuccessEventTarget) {
@@ -202,12 +210,18 @@ $(() => {
 
                 $modal.modal('hide');
 
-                // TODO arreglar que entre dos veces a este listener
-                $modal.on('hidden.bs.modal', () => {
-                    $loadingProgressBar.fadeOut();
+                var resultDone = false;
 
-                    if (result.messages) {
-                        result.messages.forEach(m => toast.success(m));
+                $modal.on('hidden.bs.modal', () => {
+                    // Prevent event from firing multiple times
+                    if (! resultDone) {
+                        $loadingProgressBar.fadeOut();
+
+                        if (result.messages) {
+                            result.messages.forEach(m => toast.success(m));
+                        }
+
+                        resultDone = true;
                     }
                 });
             },
@@ -215,8 +229,10 @@ $(() => {
                 $loadingProgressBar.fadeOut();
                 toast.error('There was an error processing the form.');
 
-                console.log('.ajax-modal form submit AJAX error');
-                console.error(result);
+                if (! autoconf.APP_PRODUCTION) {
+                    console.log('.ajax-modal form submit AJAX error');
+                    console.error(result);
+                }
             }
         });
     });

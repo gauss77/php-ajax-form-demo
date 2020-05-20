@@ -22,7 +22,7 @@ class RecordUpdate extends AjaxForm
      * Initialize specific form constants
      */
     private const FORM_ID = 'record-update';
-    private const SUBMIT_URL = 'form-manager-record-update.php';
+    private const SUBMIT_URL = APP_URL . '/form-manager-record-update.php';
     private const EXPECTED_SUBMIT_METHOD = AjaxForm::HTTP_PATCH;
     private const ON_SUCCESS_EVENT_NAME = 'updated.record';
     private const ON_SUCCESS_EVENT_TARGET = '#record-list-table';

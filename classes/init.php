@@ -21,7 +21,7 @@ declare(strict_types = 1);
  */
 
 define("APP_ROOT", "__DIR__");
-define("APP_URL", "http://localhost/ajaxforms");
+define("APP_URL", "http://localhost/php-ajax-form-demo");
 define("APP_PRODUCTION", false);
 
 /**
