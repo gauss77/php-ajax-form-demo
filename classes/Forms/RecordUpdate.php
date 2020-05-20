@@ -92,14 +92,14 @@ class RecordUpdate extends AjaxForm
         $html = <<< HTML
         <input type="hidden" name="uniqueId">
         <div class="form-group">
-            <label for="control-name">Nombre</label>
-            <input name="name" type="text" class="form-control" id="control-name" aria-describedby="control-name-help" placeholder="Nombre">
-            <small id="control-name-help" class="form-text text-muted">Introduce tu nombre.</small>
+            <label for="control-name">Name</label>
+            <input name="name" type="text" class="form-control" id="control-name" aria-describedby="control-name-help" placeholder="Name">
+            <small id="control-name-help" class="form-text text-muted">Please fill the name.</small>
         </div>
         <div class="form-group">
-            <label for="control-surname">Apellidos</label>
-            <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Apellidos">
-            <small id="control-surname-help" class="form-text text-muted">Introduce tus apellidos.</small>
+            <label for="control-surname">Surname</label>
+            <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Surname">
+            <small id="control-surname-help" class="form-text text-muted">Please fill the surname.</small>
         </div>
         HTML;
 
