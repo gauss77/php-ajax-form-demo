@@ -101,14 +101,6 @@ class RecordUpdate extends AjaxForm
             <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Apellidos">
             <small id="control-surname-help" class="form-text text-muted">Introduce tus apellidos.</small>
         </div>
-        <input type="checkbox" name="hellok" value="asdjkkl" checked>
-        <input type="checkbox" name="hellok" value="jkklasf" checked>
-        <select id="cars" name="hellotres" multiple>
-            <option value="volvo" selected>Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="opel" selected>Opel</option>
-            <option value="audi">Audi</option>
-        </select>
         HTML;
 
         return $html;

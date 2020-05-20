@@ -13,13 +13,11 @@
 /**
  * Enable PHP strict typing
  */
-
 declare(strict_types = 1);
 
 /**
  * Declare constants
  */
-
 define("APP_ROOT", "__DIR__");
 define("APP_URL", "http://localhost/php-ajax-form-demo");
 define("APP_PRODUCTION", false);
@@ -27,7 +25,6 @@ define("APP_PRODUCTION", false);
 /**
  * Enable error display for debugging
  */
-
 if (! APP_PRODUCTION) {
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -36,7 +33,6 @@ if (! APP_PRODUCTION) {
 /**
  * Charset and timezone setup
  */
-
 ini_set("default_charset", "UTF-8");
 setLocale(LC_ALL, "es_ES.UTF.8");
 setlocale(LC_TIME, "es_ES");
@@ -48,7 +44,6 @@ date_default_timezone_set("Europe/Madrid");
  * @see https://www.php.net/manual/en/function.spl-autoload-register.php
  * @see https://www.php-fig.org/psr/psr-4/
  */
-
 spl_autoload_register(function ($class) {
 	$prefix = "PhpAjaxFormDemo\\";
 
@@ -72,13 +67,11 @@ spl_autoload_register(function ($class) {
 /**
  * Start PHP session
  */
-
 session_start();
 
 /**
  * Initialize record demo data
  */
-
 \PhpAjaxFormDemo\Data\Record::initDemoData();
 
 ?>
