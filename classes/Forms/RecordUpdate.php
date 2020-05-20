@@ -19,20 +19,29 @@ class RecordUpdate extends AjaxForm
 {
 
     /**
-     * Initialize form constants
+     * Initialize specific form constants
      */
     private const FORM_ID = 'record-update';
     private const SUBMIT_URL = 'form-manager-record-update.php';
     private const EXPECTED_SUBMIT_METHOD = AjaxForm::HTTP_PATCH;
+    private const ON_SUCCESS_EVENT_NAME = 'updated.record';
+    private const ON_SUCCESS_EVENT_TARGET = '#record-list-table';
 
     /**
      * Constructs the form object
      */
     public function __construct()
     {
-        $this->formId = self::FORM_ID;
-        $this->submitUrl = self::SUBMIT_URL;
-        $this->expectedSubmitMethod = self::EXPECTED_SUBMIT_METHOD;
+        parent::__construct(
+            self::FORM_ID,
+            self::SUBMIT_URL,
+            self::EXPECTED_SUBMIT_METHOD
+        );
+
+        $this->setOnSuccess(
+            self::ON_SUCCESS_EVENT_NAME,
+            self::ON_SUCCESS_EVENT_TARGET
+        );
     }
 
     protected function getDefaultData(array $requestData) : array

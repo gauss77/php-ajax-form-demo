@@ -180,7 +180,8 @@ $(() => {
         var $form = $(e.currentTarget);
         var $modal = $form.closest('.ajax-modal');
         
-        var onUpdatedTarget = $modal.data('ajax-on-updated-target');
+        var onSuccessEventName = $modal.data('ajax-on-success-event-name');
+        var onSuccessEventTarget = $modal.data('ajax-on-success-event-target');
         var submitUrl = $modal.data('ajax-submit-url');
         var submitMethod = $modal.data('ajax-submit-method');
 
@@ -195,7 +196,9 @@ $(() => {
                 console.log(result);
 
                 // TODO: update list
-                console.log(onUpdatedTarget);
+                if (onSuccessEventName && onSuccessEventTarget) {
+                    $(onSuccessEventTarget).trigger(onSuccessEventName, result);
+                }
 
                 $modal.modal('hide');
 
@@ -218,7 +221,14 @@ $(() => {
         });
     });
 
-    $()
+    // Handle record update success (must be in ON_SUCCESS_EVENT_* constants)
+    $('#record-list-table').on('updated.record', (e, result) => {
+        var $list = $(e.currentTarget);
+        var uniqueId = result.uniqueId;
+        var $tableRow = $list.find('tr[data-unique-id="' + uniqueId + '"]');
+        $tableRow.find('td[data-col-name="name"]').text(result.name);
+        $tableRow.find('td[data-col-name="surname"]').text(result.surname);
+    })
 
     /**
      * AJAX form modal empty on hide

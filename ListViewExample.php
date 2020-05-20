@@ -61,7 +61,7 @@ $recordUpdateForm = new RecordUpdate();
         </div>
             
         <nav id="main-header" class="navbar navbar-expand-lg navbar-light bg-light">
-            <button type="button" id="btn-side-menu-show" class="btn btn-sm btn-outline-secondary mr-4">Menú</button>
+            <button type="button" id="btn-side-menu-show" class="btn btn-sm btn-outline-secondary mr-4">Menu</button>
 
             <a class=" navbar-brand" href="#">
                 <img src="img/logo.svg" height="30" alt="" class="d-block mr-3">
@@ -70,7 +70,7 @@ $recordUpdateForm = new RecordUpdate();
             <div class="ml-auto">
                 <ul class="navbar-nav">
                     <li class="nav-item ">
-                        <a class="nav-link" href="#">Iniciar sesión</a>
+                        <a class="nav-link" href="#">Login</a>
                     </li>
                 </ul>
             </div>
@@ -82,35 +82,38 @@ $recordUpdateForm = new RecordUpdate();
             <div class="row">
                 <div class="col"></div>
                 <div class="col-10">
-                    <button id="btn-record-create-modal-open" class="btn btn-primary">Crear registro</button>
+                    <button id="btn-record-create-modal-open" class="btn btn-primary">Create record</button>
                     
                     <div class="card mt-3">
-                        <table id="user-list-table" class="table table-borderless table-striped">
+                        <table id="record-list-table" class="table table-borderless table-striped">
                             <thead>
                                 <tr>
                                     <th scope="col">Id</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Acciones</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr data-unique-id="23">
                                     <td scope="row">23</td>
-                                    <td>Pedro Martínez Fernández</td>
+                                    <td data-col-name="name">Pedro</td>
+                                    <td data-col-name="surname">Martínez Fernández</td>
                                     <td>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="23">Ver</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="23">Editar</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="23">Eliminar</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="23">Read</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="23">Update</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="23">Delete</button>
                                     </td>
                                 </tr>
 
-                                <tr>
+                                <tr data-unique-id="98">
                                     <td scope="row">98</td>
-                                    <td>Sandra Alarcón Molina</td>
+                                    <td data-col-name="name">Sandra</td>
+                                    <td data-col-name="surname">Alarcón Molina</td>
                                     <td>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="98">Ver</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="98">Editar</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="98">Eliminar</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="98">Read</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="98">Update</button>
+                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="98">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>

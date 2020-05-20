@@ -16,28 +16,54 @@ abstract class AjaxForm
 {
 
     /**
-     * @var string $formId               Form identifier
-     * @var string FORM_ID_FIELD         Form identifier field name (input and 
-     *                                   form id attribute)
+     * @var string $formId       Form identifier
+     * @var string FORM_ID_FIELD Form identifier field name (input and form id
+     *                           attribute)
      */
-    protected $formId = null;
+    private $formId = null;
     private const FORM_ID_FIELD = 'form-id';
 
     /**
-     * @var string $onUpdatedTarget       Identifier of the element on which to 
-     *                                    fire the ajax.updated event
-     * @var string ON_UPDATE_TARGET_FIELD Field name (data-* attribute)
+     * @var string $submitUrl       Form submit URL
+     * @var string SUBMIT_URL_FIELD Form submit URL field name (data-*
+     *                              attribute)
      */
-    protected $onUpdatedTarget = null;
-    private const ON_UPDATE_TARGET_FIELD = 'ajax-on-updated-target';
+    private $submitUrl = null;
+    private const SUBMIT_URL_FIELD = 'ajax-submit-url';
 
     /**
+     * @var string $onSuccessEventName         Name of the event to be fired on
+     *                                         AJAX success
+     * @var string ON_SUCCESS_EVENT_NAME_FIELD Field name (data-* attribute)
+     * @var string $onSuccessTarget            Identifier of the element on 
+     *                                         which to fire the event
+     * @var string ON_SUCCESS_TARGET_FIELD     Field name (data-* attribute)
+     */
+    private $onSuccessEventName = null;
+    private const ON_SUCCESS_EVENT_NAME_FIELD = 'ajax-on-success-event-name';
+    private $onSuccessEventTarget = null;
+    private const ON_SUCCESS_EVENT_TARGET_FIELD = 'ajax-on-success-event-target';
+
+    /**
+     * @var string HTTP_GET              Supported HTTP method type: GET
      * @var string HTTP_POST             Supported HTTP method type: POST
+     * @var string HTTP_PATCH            Supported HTTP method type: PATCH
+     * @var string HTTP_DELETE           Supported HTTP method type: DELETE
+     * @var array SUPPORTED_HTTP_METHODS All supported method types
      * @var string $expectedSubmitMethod Expected form submit method
      */
+    public const HTTP_GET = 'GET';
     public const HTTP_POST = 'POST';
     public const HTTP_PATCH = 'PATCH';
-    protected $expectedSubmitMethod = null;
+    public const HTTP_DELETE = 'DELETE';
+    public const SUPPORTED_HTTP_METHODS = [
+        self::HTTP_GET,
+        self::HTTP_POST,
+        self::HTTP_PATCH,
+        self::HTTP_DELETE
+    ];
+    private $expectedSubmitMethod = null;
+    private const EXPECTED_SUBMIT_METHOD_FIELD = 'ajax-submit-method';
 
     /**
      * @var string CSRF_PREFIX           CSRF prefix for $_SESSION storing
@@ -52,9 +78,37 @@ abstract class AjaxForm
     private const JSON_ADMITTED_CONTENT_TYPE = 'application/json; charset=utf-8';
 
     /**
-     * @var array $resultMessage         Form process result messages
+     * Standard constructor
      */
-    private $resultMessages = array();
+    public function __construct(
+        string $formId,
+        string $submitUrl,
+        string $expectedSubmitMethod
+    )
+    {
+        $this->formId = $formId;
+        $this->submitUrl = $submitUrl;
+        
+        // Check submit method is valid
+        if (! in_array($expectedSubmitMethod, self::SUPPORTED_HTTP_METHODS)) {
+            throw new \Exception("Unsupported submit method \"$expectedSubmitMethod\".");
+        }
+
+        $this->expectedSubmitMethod = $expectedSubmitMethod;
+    }
+
+    /**
+     * Getters and setters (only the necessary ones)
+     */
+
+    public function setOnSuccess(
+        string $onSuccessEventName,
+        string $onSuccessEventTarget
+    )
+    {
+        $this->onSuccessEventName = $onSuccessEventName;
+        $this->onSuccessEventTarget = $onSuccessEventTarget;
+    }
 
     /**
      * Handles HTTP requests, called by the controller
@@ -231,16 +285,29 @@ abstract class AjaxForm
         $inputs = $this->generateFormInputs();
 
         $formId = $this->formId;
-        $onUpdatedTargetData = $this->onUpdatedTarget ?
-            'data-' . self::ON_UPDATE_TARGET_FIELD .
-            '="' . $this->onUpdatedTarget . "'" : '';
-        $submitUrl = $this->submitUrl;
-        $expectedSubmitMethod = $this->expectedSubmitMethod;
         $formIdField = self::FORM_ID_FIELD;
         $csrfTokenField = self::CSRF_TOKEN_FIELD;
 
+        // Optional on success event name
+        $onSuccessEventNameData = $this->onSuccessEventName ?
+            'data-' . self::ON_SUCCESS_EVENT_NAME_FIELD .
+            '="' . $this->onSuccessEventName . '"' : '';
+
+        // Optional on success event target
+        $onSuccessEventTargetData = $this->onSuccessEventTarget ?
+            'data-' . self::ON_SUCCESS_EVENT_TARGET_FIELD .
+            '="' . $this->onSuccessEventTarget . '"' : '';
+
+        $submitUrlData =
+            'data-' . self::SUBMIT_URL_FIELD .
+            '="' . $this->submitUrl . '"';
+
+        $expectedSubmitMethodData =
+            'data-' . self::EXPECTED_SUBMIT_METHOD_FIELD .
+            '="' . $this->expectedSubmitMethod . '"';
+
         $html = <<< HTML
-        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onUpdatedTargetData data-ajax-submit-url="$submitUrl" data-ajax-submit-method="$expectedSubmitMethod" tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
+        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onSuccessEventNameData $onSuccessEventTargetData $submitUrlData $expectedSubmitMethodData tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <form class="modal-content" id="$formId">
                     <input type="hidden" name="$formIdField">
