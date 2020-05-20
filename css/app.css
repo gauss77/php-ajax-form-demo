@@ -53,8 +53,11 @@
 }
 
 #toasts-container {
-    width: 350px;
-    margin: 20px auto;
+    min-width: 350px;
+    z-index: 1041;
+    position: fixed;
+    bottom: 32px;
+    left: 32px;
 }
 
 .type-indicator {

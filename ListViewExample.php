@@ -16,6 +16,8 @@ use PhpAjaxFormDemo\Forms\RecordUpdate;
 
 $recordUpdateForm = new RecordUpdate();
 
+$v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,7 +34,8 @@ $recordUpdateForm = new RecordUpdate();
         <!-- Styles and fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap">
-        <link rel="stylesheet" href="css/app.css?v=0.0.000001">
+
+        <link rel="stylesheet" href="css/app.css<?php echo $v; ?>">
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="css/bootstrap-4.5.0.min.css">
@@ -135,7 +138,7 @@ $recordUpdateForm = new RecordUpdate();
         </footer>
 
         <!-- App autoconfiguration -->
-        <script src="js/autoconf.php"></script>
+        <script src="js/autoconf.php<?php echo $v; ?>"></script>
 
         <!-- jQuery -->
         <script src="js/jquery-3.5.1.min.js"></script>
@@ -147,7 +150,7 @@ $recordUpdateForm = new RecordUpdate();
         <script src="js/bootstrap-4.5.0.js"></script>
 
         <!-- App scripts -->
-        <script src="js/app.js?v=0.0.000001"></script>
+        <script src="js/app.js<?php echo $v; ?>"></script>
 
     </body>
 </html>

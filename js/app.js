@@ -12,7 +12,8 @@ toast = {};
  */
 toast.create = (type, text) =>
 {
-    var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-delay="3000"><div class="toast-header"><span class="type-indicator ' + type + '"></span><strong class="mr-auto">Gesi</strong><button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">' + text + '</div></div>';
+    var autohide = autoconf.APP_PRODUCTION;
+    var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="' + autohide + '" data-delay="3000"><div class="toast-header"><span class="type-indicator ' + type + '"></span><strong class="mr-auto">Gesi</strong><button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">' + text + '</div></div>';
 
     const $toast = $(toastHtml);
 
@@ -153,8 +154,10 @@ $(() => {
                 dataType: 'json',
                 data: data,
                 success: (result) => {
-                    console.log('#btn-ajax-modal-fire click AJAX success');
-                    console.log(result);
+                    if (! autoconf.APP_PRODUCTION) {
+                        console.log('#btn-ajax-modal-fire click AJAX success');
+                        console.log(result);
+                    }
 
                     // Fill form placeholder inputs
                     for (const name in result) {
@@ -210,20 +213,11 @@ $(() => {
 
                 $modal.modal('hide');
 
-                var resultDone = false;
+                $loadingProgressBar.fadeOut();
 
-                $modal.on('hidden.bs.modal', () => {
-                    // Prevent event from firing multiple times
-                    if (! resultDone) {
-                        $loadingProgressBar.fadeOut();
-
-                        if (result.messages) {
-                            result.messages.forEach(m => toast.success(m));
-                        }
-
-                        resultDone = true;
-                    }
-                });
+                if (result.messages) {
+                    result.messages.forEach(m => toast.success(m));
+                }
             },
             error: (result) => {
                 $loadingProgressBar.fadeOut();
@@ -237,15 +231,6 @@ $(() => {
         });
     });
 
-    // Handle record update success (must be in ON_SUCCESS_EVENT_* constants)
-    $('#record-list-table').on('updated.record', (e, result) => {
-        var $list = $(e.currentTarget);
-        var uniqueId = result.uniqueId;
-        var $tableRow = $list.find('tr[data-unique-id="' + uniqueId + '"]');
-        $tableRow.find('td[data-col-name="name"]').text(result.name);
-        $tableRow.find('td[data-col-name="surname"]').text(result.surname);
-    })
-
     /**
      * AJAX form modal empty on hide
      */
@@ -253,4 +238,14 @@ $(() => {
         $(e.currentTarget).find('input, select, textarea').val();
     });
 
+    /**
+     * Handle record update success (ON_SUCCESS_EVENT_*)
+     */
+    $('#record-list-table').on('updated.record', (e, result) => {
+        var $list = $(e.currentTarget);
+        var uniqueId = result.uniqueId;
+        var $tableRow = $list.find('tr[data-unique-id="' + uniqueId + '"]');
+        $tableRow.find('td[data-col-name="name"]').text(result.name);
+        $tableRow.find('td[data-col-name="surname"]').text(result.surname);
+    });
 });
