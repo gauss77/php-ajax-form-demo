@@ -17,16 +17,26 @@ abstract class AjaxForm
 
     /**
      * @var string $formId               Form identifier
-     * @var string FORM_ID_FIELD         Form identifier field name
+     * @var string FORM_ID_FIELD         Form identifier field name (input and 
+     *                                   form id attribute)
      */
     protected $formId = null;
-    private const FORM_ID_FIELD = 'formId';
+    private const FORM_ID_FIELD = 'form-id';
+
+    /**
+     * @var string $onUpdatedTarget       Identifier of the element on which to 
+     *                                    fire the ajax.updated event
+     * @var string ON_UPDATE_TARGET_FIELD Field name (data-* attribute)
+     */
+    protected $onUpdatedTarget = null;
+    private const ON_UPDATE_TARGET_FIELD = 'ajax-on-updated-target';
 
     /**
      * @var string HTTP_POST             Supported HTTP method type: POST
      * @var string $expectedSubmitMethod Expected form submit method
      */
     public const HTTP_POST = 'POST';
+    public const HTTP_PATCH = 'PATCH';
     protected $expectedSubmitMethod = null;
 
     /**
@@ -70,16 +80,16 @@ abstract class AjaxForm
 
         } elseif ($httpMethod === $this->expectedSubmitMethod) {
 
-            // If method is the one expected for submit, process data sent
-            if ($this->expectedSubmitMethod === self::HTTP_POST) {
-                $data = $_POST;
-            } else {
-                $data = array();
-            }
-            
+            // Get request data as associative array
+            $dataInput = file_get_contents('php://input');
+            $data = json_decode($dataInput, true);
+
             // Check form submit is valid
-            if ($data[self::FORM_ID_FIELD] == $this->formId
-                && $this->CsrfValidateToken($data[self::CSRF_TOKEN_FIELD])) {
+            $submittedFormId = $data[self::FORM_ID_FIELD] ?? null;
+            $submittedCsrfToken = $data[self::CSRF_TOKEN_FIELD] ?? null;
+
+            if ($submittedFormId == $this->formId
+                && $this->CsrfValidateToken($submittedCsrfToken)) {
                 
                 $this->processSubmit($data);
 
@@ -88,6 +98,10 @@ abstract class AjaxForm
 
                 $this->respondJsonError(400, $errorMessages);
             }
+        } else {
+            $this->respondJsonError(400, // Bad request
+                array('Method not supported')
+            );
         }
     }
 
@@ -217,15 +231,18 @@ abstract class AjaxForm
         $inputs = $this->generateFormInputs();
 
         $formId = $this->formId;
+        $onUpdatedTargetData = $this->onUpdatedTarget ?
+            'data-' . self::ON_UPDATE_TARGET_FIELD .
+            '="' . $this->onUpdatedTarget . "'" : '';
         $submitUrl = $this->submitUrl;
         $expectedSubmitMethod = $this->expectedSubmitMethod;
         $formIdField = self::FORM_ID_FIELD;
         $csrfTokenField = self::CSRF_TOKEN_FIELD;
 
         $html = <<< HTML
-        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" data-ajax-submit-url="$submitUrl" data-ajax-submit-method="$expectedSubmitMethod" tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
+        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onUpdatedTargetData data-ajax-submit-url="$submitUrl" data-ajax-submit-method="$expectedSubmitMethod" tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <form class="modal-content">
+                <form class="modal-content" id="$formId">
                     <input type="hidden" name="$formIdField">
                     <input type="hidden" name="$csrfTokenField">
                     <div class="modal-header">

@@ -10,7 +10,7 @@ toast = {};
 /**
  * Creates a toast
  */
-toast.create = function (type, text)
+toast.create = (type, text) =>
 {
     var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-delay="3000"><div class="toast-header"><span class="type-indicator ' + type + '"></span><strong class="mr-auto">Gesi</strong><button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">' + text + '</div></div>';
 
@@ -22,7 +22,7 @@ toast.create = function (type, text)
 /**
  * Creates and shows a success toast
  */
-toast.success = function (text)
+toast.success = (text) =>
 {
     var $toast = toast.create('success', text);
     $('#toasts-container').prepend($toast);
@@ -32,11 +32,46 @@ toast.success = function (text)
 /**
  * Creates and shows an error toast
  */
-toast.error = function (text)
+toast.error = (text) =>
 {
     var $toast = toast.create('error', text);
     $('#toasts-container').prepend($toast);
     $toast.toast('show');
+}
+
+/**
+ * Aux functions
+ */
+
+var aux = {};
+
+aux.jQueryFormToJsonString = ($form) =>
+{
+    var resultObject = {};
+
+    // Obtener objeto DOM del formulario
+    const form = $form[0];
+
+    // Obtener datos del formulario
+    var formData = new FormData(form);
+
+    // Recoger todos los campos
+    for (const [key, value] of formData.entries()) {
+        // Permitir que haya varios valores para campos con el mismo atributo 
+        // 'name' (y convertir estos a arrays)
+        if (resultObject[key]) {
+            if (Array.isArray(resultObject[key])) {
+                resultObject[key].push(value);
+            } else {
+                const prev = resultObject[key];
+                resultObject[key] = [ prev, value ];
+            }
+        } else {
+            resultObject[key] = value;
+        }
+    }
+
+    return JSON.stringify(resultObject);
 }
 
 /**
@@ -145,6 +180,7 @@ $(() => {
         var $form = $(e.currentTarget);
         var $modal = $form.closest('.ajax-modal');
         
+        var onUpdatedTarget = $modal.data('ajax-on-updated-target');
         var submitUrl = $modal.data('ajax-submit-url');
         var submitMethod = $modal.data('ajax-submit-method');
 
@@ -153,12 +189,13 @@ $(() => {
             type: submitMethod,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            data: $form.serialize(),
+            data: aux.jQueryFormToJsonString($form),
             success: (result) => {
                 console.log('.ajax-modal form submit AJAX success');
                 console.log(result);
 
                 // TODO: update list
+                console.log(onUpdatedTarget);
 
                 $modal.modal('hide');
 
@@ -180,6 +217,8 @@ $(() => {
             }
         });
     });
+
+    $()
 
     /**
      * AJAX form modal empty on hide
