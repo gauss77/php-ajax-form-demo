@@ -37,6 +37,11 @@ abstract class AjaxForm
     private const CSRF_TOKEN_FIELD = 'csrfToken';
 
     /**
+     * @var string JSON_ADMITTED_CONTENT_TYPE JSON admitted content type
+     */
+    private const JSON_ADMITTED_CONTENT_TYPE = 'application/json; charset=utf-8';
+
+    /**
      * @var array $resultMessage         Form process result messages
      */
     private $resultMessages = array();
@@ -46,6 +51,16 @@ abstract class AjaxForm
      */
     public function manage() : void
     {
+        // Check content type
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? null;
+
+        if ($contentType != self::JSON_ADMITTED_CONTENT_TYPE) {
+            $this->respondJsonError(400, array( // Bad request
+                'Content type not supported'
+            ));
+        }
+
+        // Check request method
         $httpMethod = $_SERVER['REQUEST_METHOD'];
 
         if ($httpMethod === 'GET') {

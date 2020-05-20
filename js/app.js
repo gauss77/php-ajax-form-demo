@@ -108,9 +108,12 @@ $(() => {
             $.ajax({
                 url: url,
                 type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 data: data,
                 success: (result) => {
-                    //console.log(result);
+                    console.log('#btn-ajax-modal-fire click AJAX success');
+                    console.log(result);
 
                     // Fill form placeholder inputs
                     for (const name in result) {
@@ -124,6 +127,7 @@ $(() => {
                 error: (result) => {
                     // Hide loader and log error
                     $loadingProgressBar.fadeOut();
+                    console.log('#btn-ajax-modal-fire click AJAX error');
                     console.error(result);
                 }
             });
@@ -147,9 +151,13 @@ $(() => {
         $.ajax({
             url: submitUrl,
             type: submitMethod,
+            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             data: $form.serialize(),
             success: (result) => {
+                console.log('.ajax-modal form submit AJAX success');
+                console.log(result);
+
                 // TODO: update list
 
                 $modal.modal('hide');
@@ -166,6 +174,8 @@ $(() => {
             error: (result) => {
                 $loadingProgressBar.fadeOut();
                 toast.error('There was an error processing the form.');
+
+                console.log('.ajax-modal form submit AJAX error');
                 console.error(result);
             }
         });
