@@ -12,8 +12,10 @@
 
 require_once('classes/init.php');
 
+use PhpAjaxFormDemo\Forms\RecordRead;
 use PhpAjaxFormDemo\Forms\RecordUpdate;
 
+$recordReadForm = new RecordRead();
 $recordUpdateForm = new RecordUpdate();
 
 $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
@@ -128,7 +130,10 @@ $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
             </div>
         </div>
 
-        <!-- Modal de edición -->
+        <!-- Record read modal -->
+        <?php echo $recordReadForm->generateModal(); ?>
+        
+        <!-- Record update modal -->
         <?php echo $recordUpdateForm->generateModal(); ?>
 
         <footer id="main-footer" class="page-footer font-small bg-light pt-4">

@@ -19,14 +19,22 @@ abstract class AjaxForm
      * @var string $formId       Form identifier
      * @var string FORM_ID_FIELD Form identifier field name (input and form id
      *                           attribute)
+     * @var string $formName     Form name (modal heading)
      */
     private $formId = null;
     private const FORM_ID_FIELD = 'form-id';
+    private $formName = null;
+
+    /**
+     * @var string $readOnly       Locks the form with no submission expected
+     * @var string READ_ONLY_FIELD Form field name
+     */
+    private $readOnly = false;
+    private const READ_ONLY_FIELD = 'read-only';
 
     /**
      * @var string $submitUrl       Form submit URL
-     * @var string SUBMIT_URL_FIELD Form submit URL field name (data-*
-     *                              attribute)
+     * @var string SUBMIT_URL_FIELD Form field name (data-* attribute)
      */
     private $submitUrl = null;
     private const SUBMIT_URL_FIELD = 'ajax-submit-url';
@@ -34,10 +42,12 @@ abstract class AjaxForm
     /**
      * @var string $onSuccessEventName         Name of the event to be fired on
      *                                         AJAX success
-     * @var string ON_SUCCESS_EVENT_NAME_FIELD Field name (data-* attribute)
+     * @var string ON_SUCCESS_EVENT_NAME_FIELD Form field name (data-* 
+     *                                         attribute)
      * @var string $onSuccessTarget            Identifier of the element on 
      *                                         which to fire the event
-     * @var string ON_SUCCESS_TARGET_FIELD     Field name (data-* attribute)
+     * @var string ON_SUCCESS_TARGET_FIELD     Form field name (data-* 
+     *                                         attribute)
      */
     private $onSuccessEventName = null;
     private const ON_SUCCESS_EVENT_NAME_FIELD = 'ajax-on-success-event-name';
@@ -82,11 +92,13 @@ abstract class AjaxForm
      */
     public function __construct(
         string $formId,
+        string $formName,
         string $submitUrl,
         string $expectedSubmitMethod
     )
     {
         $this->formId = $formId;
+        $this->formName = $formName;
         $this->submitUrl = $submitUrl;
         
         // Check submit method is valid
@@ -108,6 +120,16 @@ abstract class AjaxForm
     {
         $this->onSuccessEventName = $onSuccessEventName;
         $this->onSuccessEventTarget = $onSuccessEventTarget;
+    }
+
+    public function setReadOnlyTrue()
+    {
+        $this->readOnly = true;
+    }
+
+    public function isReadOnly()
+    {
+        return $this->readOnly;
     }
 
     /**
@@ -132,7 +154,9 @@ abstract class AjaxForm
             // If method is GET, generate default form data
             $this->processInitialData($_GET);
 
-        } elseif ($httpMethod === $this->expectedSubmitMethod) {
+        // Check form is not read-only and method is the one expected
+        } elseif (! $this->isReadOnly()
+            && $httpMethod === $this->expectedSubmitMethod) {
 
             // Get request data as associative array
             $dataInput = file_get_contents('php://input');
@@ -266,14 +290,16 @@ abstract class AjaxForm
      * 
      * @param array $data Data sent in form submission
      */
-    abstract public function processSubmit(array $data = array()) : void;
+    public function processSubmit(array $data = array()) : void
+    {
+    }
 
     /**
      * Generates specific form inputs as placeholders for AJAX preloading
      * 
      * @return string HTML containing the inputs
      */
-    abstract public function generateFormInputs() : string;
+    abstract protected function generateFormInputs() : string;
 
     /**
      * Generates the default HTML Bootstrap modal
@@ -285,6 +311,7 @@ abstract class AjaxForm
         $inputs = $this->generateFormInputs();
 
         $formId = $this->formId;
+        $formName = $this->formName;
         $formIdField = self::FORM_ID_FIELD;
         $csrfTokenField = self::CSRF_TOKEN_FIELD;
 
@@ -306,6 +333,17 @@ abstract class AjaxForm
             'data-' . self::EXPECTED_SUBMIT_METHOD_FIELD .
             '="' . $this->expectedSubmitMethod . '"';
 
+        if (! $this->isReadOnly()) {
+            $footer = <<< HTML
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Continuar</button>
+            </div>
+            HTML;
+        } else {
+            $footer = '';
+        }
+
         $html = <<< HTML
         <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onSuccessEventNameData $onSuccessEventTargetData $submitUrlData $expectedSubmitMethodData tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -313,7 +351,7 @@ abstract class AjaxForm
                     <input type="hidden" name="$formIdField">
                     <input type="hidden" name="$csrfTokenField">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="register-update-modal-label">Editar registro</h5>
+                        <h5 class="modal-title" id="register-update-modal-label">$formName</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -321,10 +359,7 @@ abstract class AjaxForm
                     <div class="modal-body">
                         $inputs
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Continuar</button>
-                    </div>
+                    $footer
                 </form>
             </div>
         </div>

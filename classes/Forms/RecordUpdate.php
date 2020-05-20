@@ -22,6 +22,7 @@ class RecordUpdate extends AjaxForm
      * Initialize specific form constants
      */
     private const FORM_ID = 'record-update';
+    private const FORM_NAME = 'Update record';
     private const SUBMIT_URL = APP_URL . '/form-manager-record-update.php';
     private const EXPECTED_SUBMIT_METHOD = AjaxForm::HTTP_PATCH;
     private const ON_SUCCESS_EVENT_NAME = 'updated.record';
@@ -34,6 +35,7 @@ class RecordUpdate extends AjaxForm
     {
         parent::__construct(
             self::FORM_ID,
+            self::FORM_NAME,
             self::SUBMIT_URL,
             self::EXPECTED_SUBMIT_METHOD
         );

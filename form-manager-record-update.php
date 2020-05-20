@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Controller for record update form submit
+ * Controller for record update form loading and submitting
  * 
  * @package ajax-form-demo
  * 
