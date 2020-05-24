@@ -23,6 +23,7 @@ class RecordRead extends AjaxForm
      */
     private const FORM_ID = 'record-read';
     private const FORM_NAME = 'Read record';
+    private const TARGET_OBJECT_NAME = 'Record';
     private const SUBMIT_URL = APP_URL . '/form-manager-record-read.php';
     private const EXPECTED_SUBMIT_METHOD = AjaxForm::HTTP_GET;
 
@@ -34,6 +35,7 @@ class RecordRead extends AjaxForm
         parent::__construct(
             self::FORM_ID,
             self::FORM_NAME,
+            self::TARGET_OBJECT_NAME,
             self::SUBMIT_URL,
             self::EXPECTED_SUBMIT_METHOD
         );

@@ -2,6 +2,8 @@
 
 namespace PhpAjaxFormDemo\Forms;
 
+use stdClass;
+
 /**
  * AJAX form template class; other forms must extend this class
  * 
@@ -16,38 +18,46 @@ abstract class AjaxForm
 {
 
     /**
-     * @var string $formId       Form identifier
+     * @var string $formId       Form identifier.
      * @var string FORM_ID_FIELD Form identifier field name (input and form id
-     *                           attribute)
-     * @var string $formName     Form name (modal heading)
+     *                           attribute).
+     * @var string $formName     Form name (modal heading).
      */
     private $formId = null;
     private const FORM_ID_FIELD = 'form-id';
     private $formName = null;
 
     /**
-     * @var string $readOnly       Locks the form with no submission expected
-     * @var string READ_ONLY_FIELD Form field name
+     * @var string $targetObjectName        Name of the object which the form is
+     *                                      modifying.
+     * @var string TARGET_OBJECT_NAME_FIELD Form field name.
+     */
+    private $targetObjectName = null;
+    private const TARGET_OBJECT_NAME_FIELD = 'ajax-target-object-name';
+
+    /**
+     * @var string $readOnly       Locks the form with no submission expected.
+     * @var string READ_ONLY_FIELD Form field name.
      */
     private $readOnly = false;
     private const READ_ONLY_FIELD = 'read-only';
 
     /**
-     * @var string $submitUrl       Form submit URL
-     * @var string SUBMIT_URL_FIELD Form field name (data-* attribute)
+     * @var string $submitUrl       Form submit URL.
+     * @var string SUBMIT_URL_FIELD Form field name (data-* attribute).
      */
     private $submitUrl = null;
     private const SUBMIT_URL_FIELD = 'ajax-submit-url';
 
     /**
      * @var string $onSuccessEventName         Name of the event to be fired on
-     *                                         AJAX success
+     *                                         AJAX success.
      * @var string ON_SUCCESS_EVENT_NAME_FIELD Form field name (data-* 
-     *                                         attribute)
+     *                                         attribute).
      * @var string $onSuccessTarget            Identifier of the element on 
-     *                                         which to fire the event
+     *                                         which to fire the event.
      * @var string ON_SUCCESS_TARGET_FIELD     Form field name (data-* 
-     *                                         attribute)
+     *                                         attribute).
      */
     private $onSuccessEventName = null;
     private const ON_SUCCESS_EVENT_NAME_FIELD = 'ajax-on-success-event-name';
@@ -55,12 +65,12 @@ abstract class AjaxForm
     private const ON_SUCCESS_EVENT_TARGET_FIELD = 'ajax-on-success-event-target';
 
     /**
-     * @var string HTTP_GET              Supported HTTP method type: GET
-     * @var string HTTP_POST             Supported HTTP method type: POST
-     * @var string HTTP_PATCH            Supported HTTP method type: PATCH
-     * @var string HTTP_DELETE           Supported HTTP method type: DELETE
-     * @var array SUPPORTED_HTTP_METHODS All supported method types
-     * @var string $expectedSubmitMethod Expected form submit method
+     * @var string HTTP_GET              Supported HTTP method type: GET.
+     * @var string HTTP_POST             Supported HTTP method type: POST.
+     * @var string HTTP_PATCH            Supported HTTP method type: PATCH.
+     * @var string HTTP_DELETE           Supported HTTP method type: DELETE.
+     * @var array SUPPORTED_HTTP_METHODS All supported method types.
+     * @var string $expectedSubmitMethod Expected form submit method.
      */
     public const HTTP_GET = 'GET';
     public const HTTP_POST = 'POST';
@@ -76,28 +86,30 @@ abstract class AjaxForm
     private const EXPECTED_SUBMIT_METHOD_FIELD = 'ajax-submit-method';
 
     /**
-     * @var string CSRF_PREFIX           CSRF prefix for $_SESSION storing
-     * @var string CSRF_TOKEN_FIELD      CSRF token field name
+     * @var string CSRF_PREFIX           CSRF prefix for $_SESSION storing.
+     * @var string CSRF_TOKEN_FIELD      CSRF token field name.
      */
     private const CSRF_PREFIX = 'csrf';
     private const CSRF_TOKEN_FIELD = 'csrfToken';
 
     /**
-     * @var string JSON_ADMITTED_CONTENT_TYPE JSON admitted content type
+     * @var string JSON_ADMITTED_CONTENT_TYPE JSON admitted content type.
      */
     private const JSON_ADMITTED_CONTENT_TYPE = 'application/json; charset=utf-8';
 
     /**
-     * Standard constructor
+     * Standard constructor.
      */
     public function __construct(
         string $formId,
         string $formName,
+        string $targetObjectName,
         string $submitUrl,
         string $expectedSubmitMethod
     )
     {
         $this->formId = $formId;
+        $this->targetObjectName = $targetObjectName;
         $this->formName = $formName;
         $this->submitUrl = $submitUrl;
         
@@ -315,6 +327,10 @@ abstract class AjaxForm
         $formIdField = self::FORM_ID_FIELD;
         $csrfTokenField = self::CSRF_TOKEN_FIELD;
 
+        $targetObjectNameData = 
+            'data-' . self::TARGET_OBJECT_NAME_FIELD .
+            '="' . $this->targetObjectName . '"';
+
         // Optional on success event name
         $onSuccessEventNameData = $this->onSuccessEventName ?
             'data-' . self::ON_SUCCESS_EVENT_NAME_FIELD .
@@ -345,7 +361,7 @@ abstract class AjaxForm
         }
 
         $html = <<< HTML
-        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onSuccessEventNameData $onSuccessEventTargetData $submitUrlData $expectedSubmitMethodData tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
+        <div class="modal fade ajax-modal" data-ajax-form-id="$formId" $onSuccessEventNameData $onSuccessEventTargetData $submitUrlData $expectedSubmitMethodData $targetObjectNameData tabindex="-1" role="dialog" aria-labelledby="register-update-modal-label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <form class="modal-content" id="$formId">
                     <input type="hidden" name="$formIdField">
@@ -400,6 +416,28 @@ abstract class AjaxForm
         }
 
         return false;
+    }
+
+    /**
+     * Generates a JSON link formalization based in HATEOAS link specification.
+     * 
+     * @param string $rel
+     * @param string $selectType 'multi' for multiple select, 'single' for 
+     *                           single select (interpreted in Bootstrap modal
+     *                           handling).
+     * @param array $data
+     * 
+     * @return stdClass Object ready for JSON serialization.
+     */
+    public static function generateHateoasSelectLink(string $rel, string $selectType, array $data) : stdClass
+    {
+        $link = new stdClass();
+
+        $link->rel = $rel;
+        $link->selectType = $selectType;
+        $link->data = $data;
+
+        return $link;
     }
 }
 

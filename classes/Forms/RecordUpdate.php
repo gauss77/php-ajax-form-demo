@@ -2,6 +2,7 @@
 
 namespace PhpAjaxFormDemo\Forms;
 
+use PhpAjaxFormDemo\Data\SingleForeignRecord;
 use PhpAjaxFormDemo\Forms\AjaxForm;
 use PhpAjaxFormDemo\Data\Record;
 
@@ -20,9 +21,18 @@ class RecordUpdate extends AjaxForm
 
     /**
      * Initialize specific form constants
+     *
+     * @var string FORM_ID
+     * @var string FORM_NAME
+     * @var string DATA_OBJECT_NAME
+     * @var string SUBMIT_URL
+     * @var string EXPECTED_SUBMIT_METHOD
+     * @var string ON_SUCCESS_EVENT_NAME
+     * @var string ON_SUCCESS_EVENT_TARGET
      */
     private const FORM_ID = 'record-update';
     private const FORM_NAME = 'Update record';
+    private const TARGET_OBJECT_NAME = 'Record';
     private const SUBMIT_URL = APP_URL . '/form-manager-record-update.php';
     private const EXPECTED_SUBMIT_METHOD = AjaxForm::HTTP_PATCH;
     private const ON_SUCCESS_EVENT_NAME = 'updated.record';
@@ -36,6 +46,7 @@ class RecordUpdate extends AjaxForm
         parent::__construct(
             self::FORM_ID,
             self::FORM_NAME,
+            self::TARGET_OBJECT_NAME,
             self::SUBMIT_URL,
             self::EXPECTED_SUBMIT_METHOD
         );
@@ -78,12 +89,20 @@ class RecordUpdate extends AjaxForm
 
         $record = Record::getById($uniqueId);
 
+        // Nationality HATEOAS formalization
+        $nationalityLink = AjaxForm::generateHateoasSelectLink(
+            'nationality',
+            'single',
+            SingleForeignRecord::getAll()
+        );
+
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
-            'uniqueId' => $record->getUniqueId(),
-            'name' => $record->getName(),
-            'surname' => $record->getSurname()
+            'links' => array(
+                $nationalityLink
+            ),
+            self::TARGET_OBJECT_NAME => $record
         );
 
         return $responseData;
@@ -102,6 +121,16 @@ class RecordUpdate extends AjaxForm
             <label for="control-surname">Surname</label>
             <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Surname">
             <small id="control-surname-help" class="form-text text-muted">Please fill the surname.</small>
+        </div>
+        <div class="form-group">
+            <label for="control-nationality">Nationality</label>
+            <select name="nationality" class="form-control" id="control-nationality">
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="control-hobbies">Hobbies</label>
+            <select name="hobbies" class="form-control" id="control-hobbies" multiple>
+            </select>
         </div>
         HTML;
 

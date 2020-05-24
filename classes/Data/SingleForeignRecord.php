@@ -3,10 +3,11 @@
 namespace PhpAjaxFormDemo\Data;
 
 use JsonSerializable;
-use PhpAjaxFormDemo\Data\SingleForeignRecord;
 
 /**
- * Record (person) demo mockup.
+ * Single foreign record (nationality) demo mockup. Used for demonstating 
+ * single-value foreign attribute and HTML single 'select' tag population and 
+ * selection.
  * 
  * @package ajax-form-demo
  * 
@@ -15,22 +16,18 @@ use PhpAjaxFormDemo\Data\SingleForeignRecord;
  * @version 0.0.1
  */
 
-class Record
+class SingleForeignRecord
     implements JsonSerializable
 {
 
     /**
-     * Record attributes.
+     * SingleForeignRecord attributes.
      * 
      * @var int $uniqueId
      * @var string $name
-     * @var string $surname
-     * @var \PhpAjaxFormDemo\Data\SingleForeignRecord $nationality
      */
     private $uniqueId;
     private $name;
-    private $surname;
-    private $nationality;
 
     /**
      * Demo data.
@@ -44,14 +41,11 @@ class Record
      * 
      * @param int $uniqueId
      * @param string $name
-     * @param string $surname
      */
-    public function __construct(int $uniqueId, string $name, string $surname, SingleForeignRecord $nationality)
+    public function __construct(int $uniqueId, string $name)
     {
         $this->uniqueId = $uniqueId;
         $this->name = $name;
-        $this->surname = $surname;
-        $this->nationality = $nationality;
     }
 
     /**
@@ -59,12 +53,13 @@ class Record
      */
     public static function initDemoData() : void
     {
-        $nationalityFrance = SingleForeignRecord::getById(2);
-        $nationalityItaly = SingleForeignRecord::getById(5);
-
         self::$data = array(
-            0 => new self(23, 'Pedro', 'Martínez Fernández', $nationalityFrance),
-            1 => new self(98, 'Sandra', 'Alarcón Molina', $nationalityItaly)
+            0 => new self(1, 'Spain'),
+            1 => new self(2, 'France'),
+            2 => new self(3, 'United Kingdom'),
+            3 => new self(4, 'Germany'),
+            4 => new self(5, 'Italy'),
+            5 => new self(6, 'Belgium')
         );
     }
 
@@ -79,7 +74,7 @@ class Record
     }
 
     /**
-     * Checks if a Record exists by a given id.
+     * Checks if a SingleForeignRecord exists by a given id.
      * 
      * @param int $uniqueId
      * 
@@ -91,22 +86,34 @@ class Record
     }
 
     /**
-     * Retrieves a Record by a given id.
+     * Retrieves a SingleForeignRecord by a given id.
      * 
      * @requires Id exists.
      * 
      * @param int $uniqueId
      * 
-     * @return \PhpAjaxFormDemo\Data\Record
+     * @return \PhpAjaxFormDemo\Data\SingleForeignRecord
      */
     public static function getById(int $uniqueId) : self
     {
         switch ($uniqueId) {
-            case 23:
+            case 1:
                 return self::$data[0];
             break;
-            case 98:
+            case 2:
                 return self::$data[1];
+            break;
+            case 3:
+                return self::$data[2];
+            break;
+            case 4:
+                return self::$data[3];
+            break;
+            case 5:
+                return self::$data[4];
+            break;
+            case 6:
+                return self::$data[5];
             break;
         }
     }
@@ -118,16 +125,14 @@ class Record
     {
         return [
             'uniqueId' => $this->getUniqueId(),
-            'selectName' => $this->getFullName(),
-            'name' => $this->getName(),
-            'surname' => $this->getSurname(),
-            'nationality' => $this->getNationality()->getUniqueId()
+            'selectName' => $this->getName(),
+            'name' => $this->getName()
         ];
     }
 
     /**
      * 
-     * Record attribute getters.
+     * SingleForeignRecord attribute getters.
      * 
      */
 
@@ -139,21 +144,6 @@ class Record
     public function getName() : string
     {
         return $this->name;
-    }
-
-    public function getSurname() : string
-    {
-        return $this->surname;
-    }
-
-    public function getFullName() : string
-    {
-        return $this->name . ' ' . $this->surname;
-    }
-
-    public function getNationality() : SingleForeignRecord
-    {
-        return $this->nationality;
     }
 }
 

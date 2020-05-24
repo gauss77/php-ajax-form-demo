@@ -159,9 +159,39 @@ $(() => {
                         console.log(result);
                     }
 
+                    // Array for late prevention
+                    var linkRels = [];
+
+                    // Get data payload (named with the target object's name)
+                    var resultData = result[$modal.data('ajax-target-object-name')];
+
+                    // Check if foreign attribute links were provided
+                    if (result.links) {
+                        result.links.forEach(link => {
+                            linkRels.push(link.rel);
+
+                            // First populate the select
+                            var $select = $modal.find('select[name="' + link.rel + '"]');
+
+                            link.data.forEach(value => {
+                                const option = '<option value="' + value.uniqueId + '">' + value.selectName + '</option>';
+                                $select.append(option);
+                            });
+
+                            // Then select the option by id
+                            if (link.selectType === 'single') {
+                                $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
+                            } else if (link.selectType === 'multi') {
+                            }
+                        });
+                    }
+                    
                     // Fill form placeholder inputs
-                    for (const name in result) {
-                        $modal.find('input[name="' + name + '"]').val(result[name]);
+                    for (const name in resultData) {
+                        // Prevent from filling linked inputs (selects)
+                        if ($.inArray(name, linkRels) === -1) {
+                            $modal.find('input[name="' + name + '"]').val(resultData[name]);
+                        }
                     }
                     
                     // Hide loader and show modal

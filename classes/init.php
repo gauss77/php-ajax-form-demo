@@ -70,8 +70,9 @@ spl_autoload_register(function ($class) {
 session_start();
 
 /**
- * Initialize record demo data
+ * Initialize Record and ForeignRecord demo data
  */
+\PhpAjaxFormDemo\Data\SingleForeignRecord::initDemoData();
 \PhpAjaxFormDemo\Data\Record::initDemoData();
 
 ?>
