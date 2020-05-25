@@ -13,11 +13,13 @@
 require_once('classes/init.php');
 
 use PhpAjaxFormDemo\Data\Record;
+use PhpAjaxFormDemo\Forms\RecordDelete;
 use PhpAjaxFormDemo\Forms\RecordRead;
 use PhpAjaxFormDemo\Forms\RecordUpdate;
 
 $recordReadForm = new RecordRead();
 $recordUpdateForm = new RecordUpdate();
+$recordDeleteForm = new RecordDelete();
 
 $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
 
@@ -147,6 +149,9 @@ foreach (Record::getAll() as $record) {
         
         <!-- Record update modal -->
         <?php echo $recordUpdateForm->generateModal(); ?>
+
+        <!-- Record delete modal -->
+        <?php echo $recordDeleteForm->generateModal(); ?>
 
         <footer id="main-footer" class="page-footer font-small bg-light pt-4">
             <div class="footer-copyright text-center p-3">

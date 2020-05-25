@@ -352,8 +352,8 @@ abstract class AjaxForm
         if (! $this->isReadOnly()) {
             $footer = <<< HTML
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Continuar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Continue</button>
             </div>
             HTML;
         } else {

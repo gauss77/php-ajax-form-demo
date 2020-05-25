@@ -157,19 +157,19 @@ class RecordUpdate extends AjaxForm
         // Check all required fields were sent
         if (empty($uniqueId) || empty($name) || empty($surname) || empty($nationality)) {
             if (empty($uniqueId)) {
-                $errors[] = 'Missing param "uniqueId".';
+                $errors[] = 'Field "uniqueId" is required.';
             }
 
             if (empty($name)) {
-                $errors[] = 'Missing param "name".';
+                $errors[] = 'Field "name" is required.';
             }
 
             if (empty($surname)) {
-                $errors[] = 'Missing param "surname".';
+                $errors[] = 'Field "surname" is required.';
             }
 
             if (empty($nationality)) {
-                $errors[] = 'Missing param "nationality".';
+                $errors[] = 'Field "nationality" is required.';
             }
 
             // Hobbies are optional
@@ -179,14 +179,14 @@ class RecordUpdate extends AjaxForm
         
         // Check Record's uniqueId is valid
         if (! Record::existsById($uniqueId)) {
-            $errors[] = 'Record with "uniqueId" "' . $uniqueId . '" not found.';
+            $errors[] = 'Record not found.'; // with "uniqueId" "' . $uniqueId . '" 
 
             $this->respondJsonError(404, $errors); // Not found
         }
 
         // Check SingleForeignRecord (nationality)'s uniqueId is valid
         if (! SingleForeignRecord::existsById($nationality)) {
-            $errors[] = 'SingleForeignRecord (nationality) with "uniqueId" "' . $uniqueId . '" not found.';
+            $errors[] = 'Nationality not found.'; // with "uniqueId" "' . $uniqueId . '" 
 
             $this->respondJsonError(404, $errors); // Not found
         }
@@ -205,7 +205,7 @@ class RecordUpdate extends AjaxForm
             // Check MultiForeignRecords (hobbies)' uniqueIds are valid
             foreach ($hobbies as $hobbie) {
                 if (! MultiForeignRecord::existsById($hobbie)) {
-                    $errors[] = 'MultiForeignRecord (hobbie) with "uniqueId" "' . $uniqueId . '" not found.';
+                    $errors[] = 'Hobbie not found.'; // with "uniqueId" "' . $uniqueId . '" 
 
                     $this->respondJsonError(404, $errors); // Not found
                 }
@@ -240,6 +240,9 @@ class RecordUpdate extends AjaxForm
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
+            'messages' => array(
+                'Register updated successfully.'
+            ),
             'links' => array(
                 $nationalityLink,
                 $hobbiesLink

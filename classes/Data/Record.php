@@ -139,6 +139,7 @@ class Record
         return [
             'uniqueId' => $this->getUniqueId(),
             'selectName' => $this->getFullName(),
+            'checkbox' => $this->getUniqueId(),
             'name' => $this->getName(),
             'surname' => $this->getSurname(),
             'nationality' => $this->getNationality()->getUniqueId(),

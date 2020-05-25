@@ -13,7 +13,8 @@ toast = {};
 toast.create = (type, text) =>
 {
     var autohide = autoconf.APP_PRODUCTION;
-    var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="' + autohide + '" data-delay="3000"><div class="toast-header"><span class="type-indicator ' + type + '"></span><strong class="mr-auto">Gesi</strong><button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">' + text + '</div></div>';
+    var appName = autoconf.APP_NAME;
+    var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="' + autohide + '" data-delay="3000"><div class="toast-header"><span class="type-indicator ' + type + '"></span><strong class="mr-auto">' + appName + '</strong><button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">' + text + '</div></div>';
 
     const $toast = $(toastHtml);
 
@@ -110,6 +111,7 @@ aux.findObjectInArray = (array, attributeName, attributeValue) =>
 aux.doEmptyForm = ($form) =>
 {
     $form.find('input, select, textarea').val();
+    $form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
     $form.find('select, textarea').empty();
 }
 
@@ -298,6 +300,10 @@ $(() => {
             error: (result) => {
                 $loadingProgressBar.fadeOut();
                 toast.error('There was an error processing the form.');
+ 
+                if (result.responseJSON.messages) {
+                    result.responseJSON.messages.forEach(m => toast.error(m));
+                }
 
                 if (! autoconf.APP_PRODUCTION) {
                     console.log('.ajax-modal form submit AJAX error');
@@ -351,5 +357,23 @@ $(() => {
         $row.find('td[data-col-name="surname"]').text(surname);
         $row.find('td[data-col-name="nationality"]').text(nationalityName);
         $row.find('td[data-col-name="hobbies"]').text(hobbiesNames);
+    });
+
+    /**
+     * Handle record delete success (ON_SUCCESS_EVENT_*)
+     */
+    $('#record-list-table').on('deleted.record', (e, params) => {
+        const $modalData = params.modalData;
+
+        const uniqueId = $modalData.find('input[name="uniqueId"]').val();
+
+        // Update list row
+
+        const $list = $(e.currentTarget);
+        const $row = $list.find('tr[data-unique-id="' + uniqueId + '"]');
+
+        $row.remove();
+
+        // TODO: Check if list is empty, add a notice.
     });
 });

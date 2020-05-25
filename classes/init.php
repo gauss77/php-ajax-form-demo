@@ -18,9 +18,10 @@ declare(strict_types = 1);
 /**
  * Declare constants
  */
-define("APP_ROOT", "__DIR__");
-define("APP_URL", "http://localhost/php-ajax-form-demo");
-define("APP_PRODUCTION", false);
+define('APP_NAME', 'PHP AJAX form demo');
+define('APP_ROOT', '__DIR__');
+define('APP_URL', 'http://localhost/php-ajax-form-demo');
+define('APP_PRODUCTION', false);
 
 /**
  * Enable error display for debugging
@@ -33,10 +34,10 @@ if (! APP_PRODUCTION) {
 /**
  * Charset and timezone setup
  */
-ini_set("default_charset", "UTF-8");
-setLocale(LC_ALL, "es_ES.UTF.8");
-setlocale(LC_TIME, "es_ES");
-date_default_timezone_set("Europe/Madrid");
+ini_set('default_charset', 'UTF-8');
+setLocale(LC_ALL, 'es_ES.UTF.8');
+setlocale(LC_TIME, 'es_ES');
+date_default_timezone_set('Europe/Madrid');
 
 /**
  * Setup class autoload
@@ -45,9 +46,9 @@ date_default_timezone_set("Europe/Madrid");
  * @see https://www.php-fig.org/psr/psr-4/
  */
 spl_autoload_register(function ($class) {
-	$prefix = "PhpAjaxFormDemo\\";
+	$prefix = 'PhpAjaxFormDemo\\';
 
-	$base_dir = __DIR__ . "/";
+	$base_dir = __DIR__ . '/';
 
 	$len = strlen($prefix);
 
@@ -57,7 +58,7 @@ spl_autoload_register(function ($class) {
 
 	$relative_class = substr($class, $len);
 
-	$file = $base_dir . str_replace("\\", "/", $relative_class) . ".php";
+	$file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
 	if (file_exists($file)) {
 		require $file;

@@ -13,6 +13,7 @@
 require_once('../classes/init.php');
 
 $appUrl = APP_URL;
+$appName = APP_NAME;
 $appProduction = APP_PRODUCTION ? 'true' : 'false';
 
 $js = <<< JS
@@ -29,6 +30,7 @@ $js = <<< JS
 
 var autoconf = {
     APP_URL : "$appUrl",
+    APP_NAME : "$appName",
     APP_PRODUCTION : $appProduction
 }
 
