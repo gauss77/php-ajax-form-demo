@@ -69,16 +69,16 @@ This method should return an array containing the data to be sent as a response.
 
 ```json
 {
-	"status":"ok",
-	"form-id":"record-read",
-	"csrf-token":"93157bab9b2a11...",
-	"Record":{
-		"uniqueId":23,
-		"selectName":"Pedro Martínez Fernández",
-		"checkbox":23,
-		"name":"Pedro",
-		"surname":"Martínez Fernández"
-	}
+    "status":"ok",
+    "form-id":"record-read",
+    "csrf-token":"93157bab9b2a11...",
+    "Record":{
+        "uniqueId":23,
+        "selectName":"Pedro Martínez Fernández",
+        "checkbox":23,
+        "name":"Pedro",
+        "surname":"Martínez Fernández"
+    }
 }
 ```
 
@@ -120,11 +120,11 @@ In this cases, an error structure is sent as a response:
 
 ```json
 {
-	"status":"error",
-	"error":404,
-	"messages":[
-		"Invalid param \"uniqueId\"."
-	]
+    "status":"error",
+    "error":404,
+    "messages":[
+        "Invalid param \"uniqueId\"."
+    ]
 }
 ```
 
@@ -164,62 +164,62 @@ A response with foreign attributes would be similar to:
 
 ```json
 {
-	"status":"ok",
-	"form-id":"record-update",
-	"csrf-token":"8a71c5ea1ff406...",
-	"links":[
-		{
-			"rel":"nationality",
-			"selectType":"single",
-			"data":[
-				{
-					"uniqueId":1,
-					"selectName":"Spain",
-					"name":"Spain"
-				},
-				/* ... */
-				{
-					"uniqueId":6,
-					"selectName":"Belgium",
-					"name":"Belgium"
-				}
-			]
-		},
-		{
-			"rel":"hobbies",
-			"selectType":"multi",
-			"data":[
-				{
-					"uniqueId":1,
-					"selectName":"Sports",
-					"name":"Sports"
-				},
-                /* ... */
-				{
-					"uniqueId":10,
-					"selectName":"Writing",
-					"name":"Writing"
-				}
-			]
-		}
-	],
-	"Record":{
-		"uniqueId":23,
-		"selectName":"Pedro Martínez Fernández",
-		"checkbox":23,
-		"name":"Pedro",
-		"surname":"Martínez Fernández",
-		"nationality":2,
-		"hobbies":[
-			1,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9
-		]
-	}
+    "status":"ok",
+    "form-id":"record-update",
+    "csrf-token":"8a71c5ea1ff406...",
+    "links":[
+        {
+            "rel":"nationality",
+            "selectType":"single",
+            "data":[
+                {
+                    "uniqueId":1,
+                    "selectName":"Spain",
+                    "name":"Spain"
+                },
+                "...",
+                {
+                    "uniqueId":6,
+                    "selectName":"Belgium",
+                    "name":"Belgium"
+                }
+            ]
+        },
+        {
+            "rel":"hobbies",
+            "selectType":"multi",
+            "data":[
+                {
+                    "uniqueId":1,
+                    "selectName":"Sports",
+                    "name":"Sports"
+                },
+                "...",
+                {
+                    "uniqueId":10,
+                    "selectName":"Writing",
+                    "name":"Writing"
+                }
+            ]
+        }
+    ],
+    "Record":{
+        "uniqueId":23,
+        "selectName":"Pedro Martínez Fernández",
+        "checkbox":23,
+        "name":"Pedro",
+        "surname":"Martínez Fernández",
+        "nationality":2,
+        "hobbies":[
+            1,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+        ]
+    }
 }
 ```
 
@@ -355,81 +355,57 @@ This will generate the following response:
 
 ```json
 {
-	"status":"ok",
-	"messages":[
-		"Register updated successfully."
-	],
-	"links":[
-		{
-			"rel":"nationality",
-			"selectType":"single",
-			"data":[
-				{
-					"uniqueId":2,
-					"selectName":"France",
-					"name":"France"
-				}
-			]
-		},
-		{
-			"rel":"hobbies",
-			"selectType":"multi",
-			"data":[
-				{
-					"uniqueId":1,
-					"selectName":"Sports",
-					"name":"Sports"
-				},
-				{
-					"uniqueId":4,
-					"selectName":"Nature",
-					"name":"Nature"
-				},
-				{
-					"uniqueId":5,
-					"selectName":"Traveling",
-					"name":"Traveling"
-				},
-				{
-					"uniqueId":6,
-					"selectName":"Socializing",
-					"name":"Socializing"
-				},
-				{
-					"uniqueId":7,
-					"selectName":"Painting",
-					"name":"Painting"
-				},
-				{
-					"uniqueId":8,
-					"selectName":"Dancing",
-					"name":"Dancing"
-				},
-				{
-					"uniqueId":9,
-					"selectName":"Reading",
-					"name":"Reading"
-				}
-			]
-		}
-	],
-	"Record":{
-		"uniqueId":23,
-		"selectName":"Pedro Martínez Fernández",
-		"checkbox":23,
-		"name":"Pedro",
-		"surname":"Martínez Fernández",
-		"nationality":2,
-		"hobbies":[
-			1,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9
-		]
-	}
+    "status":"ok",
+    "messages":[
+        "Register updated successfully."
+    ],
+    "links":[
+        {
+            "rel":"nationality",
+            "selectType":"single",
+            "data":[
+                {
+                    "uniqueId":2,
+                    "selectName":"France",
+                    "name":"France"
+                }
+            ]
+        },
+        {
+            "rel":"hobbies",
+            "selectType":"multi",
+            "data":[
+                {
+                    "uniqueId":1,
+                    "selectName":"Sports",
+                    "name":"Sports"
+                },
+                "...",
+                {
+                    "uniqueId":9,
+                    "selectName":"Reading",
+                    "name":"Reading"
+                }
+            ]
+        }
+    ],
+    "Record":{
+        "uniqueId":23,
+        "selectName":"Pedro Martínez Fernández",
+        "checkbox":23,
+        "name":"Pedro",
+        "surname":"Martínez Fernández",
+        "nationality":2,
+        "hobbies":[
+            1,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+        ]
+    }
 }
 ```
 
@@ -520,6 +496,10 @@ The provided token is sent at the same time that the form is submitted. Then, it
 ### Field names
 
 Input field and `data-*` attribute names are defined in constants in `AjaxForm` (`*_FIELD`) and in the JavaScript script (`app.js`).
+
+### PHP JSON serialization
+
+PHP data type classes should implement the `JsonJsonSerializable` interface and its `JsonSerializable::jsonSerialize()` method, as shown in the examples, to match input field names to attribute names, and to include only identifiers of foreign attributes, not the entire objects.
 
 ### JavaScript-jQuery form serialization
 
