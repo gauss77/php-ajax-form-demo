@@ -2,6 +2,7 @@
 
 namespace PhpAjaxFormDemo\Forms;
 
+use PhpAjaxFormDemo\Data\MultiForeignRecord;
 use PhpAjaxFormDemo\Forms\AjaxForm;
 use PhpAjaxFormDemo\Data\Record;
 use PhpAjaxFormDemo\Data\SingleForeignRecord;
@@ -80,14 +81,22 @@ class RecordRead extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array($record->getNationality())
+            array($record->getNationality()) // Array wrapping needed
+        );
+
+        // Hobbies HATEOAS formalization
+        $hobbiesLink = AjaxForm::generateHateoasSelectLink(
+            'hobbies',
+            'multi',
+            $record->getHobbies() // No array wrapping needed
         );
 
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
             'links' => array(
-                $nationalityLink
+                $nationalityLink,
+                $hobbiesLink
             ),
             self::TARGET_OBJECT_NAME => $record
         );

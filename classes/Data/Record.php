@@ -26,11 +26,13 @@ class Record
      * @var string $name
      * @var string $surname
      * @var \PhpAjaxFormDemo\Data\SingleForeignRecord $nationality
+     * @var array $hobbies
      */
     private $uniqueId;
     private $name;
     private $surname;
     private $nationality;
+    private $hobbies;
 
     /**
      * Demo data.
@@ -45,13 +47,15 @@ class Record
      * @param int $uniqueId
      * @param string $name
      * @param string $surname
+     * @param array $hobbies
      */
-    public function __construct(int $uniqueId, string $name, string $surname, SingleForeignRecord $nationality)
+    public function __construct(int $uniqueId, string $name, string $surname, SingleForeignRecord $nationality, array $hobbies)
     {
         $this->uniqueId = $uniqueId;
         $this->name = $name;
         $this->surname = $surname;
         $this->nationality = $nationality;
+        $this->hobbies = $hobbies;
     }
 
     /**
@@ -59,12 +63,29 @@ class Record
      */
     public static function initDemoData() : void
     {
-        $nationalityFrance = SingleForeignRecord::getById(2);
-        $nationalityItaly = SingleForeignRecord::getById(5);
+        $nationality23 = SingleForeignRecord::getById(2);
+        $nationality98 = SingleForeignRecord::getById(5);
+
+        $hobbies23 = array(
+            MultiForeignRecord::getById(1),
+            MultiForeignRecord::getById(4),
+            MultiForeignRecord::getById(5),
+            MultiForeignRecord::getById(6),
+            MultiForeignRecord::getById(7),
+            MultiForeignRecord::getById(8),
+            MultiForeignRecord::getById(9),
+        );
+        $hobbies98 = array(
+            MultiForeignRecord::getById(2),
+            MultiForeignRecord::getById(4),
+            MultiForeignRecord::getById(5),
+            MultiForeignRecord::getById(8),
+            MultiForeignRecord::getById(10)
+        );
 
         self::$data = array(
-            0 => new self(23, 'Pedro', 'Martínez Fernández', $nationalityFrance),
-            1 => new self(98, 'Sandra', 'Alarcón Molina', $nationalityItaly)
+            23 => new self(23, 'Pedro', 'Martínez Fernández', $nationality23, $hobbies23),
+            98 => new self(98, 'Sandra', 'Alarcón Molina', $nationality98, $hobbies98)
         );
     }
 
@@ -87,7 +108,7 @@ class Record
      */
     public static function existsById(int $uniqueId) : bool
     {
-        return $uniqueId === 23 || $uniqueId === 98;
+        return array_key_exists($uniqueId, self::$data);
     }
 
     /**
@@ -101,14 +122,7 @@ class Record
      */
     public static function getById(int $uniqueId) : self
     {
-        switch ($uniqueId) {
-            case 23:
-                return self::$data[0];
-            break;
-            case 98:
-                return self::$data[1];
-            break;
-        }
+        return self::$data[$uniqueId];
     }
 
     /**
@@ -116,12 +130,19 @@ class Record
      */
     public function jsonSerialize()
     {
+        $hobbiesUniqueIds = array();
+
+        foreach ($this->getHobbies() as $hobbie) {
+            $hobbiesUniqueIds[] = $hobbie->getUniqueId();
+        }
+
         return [
             'uniqueId' => $this->getUniqueId(),
             'selectName' => $this->getFullName(),
             'name' => $this->getName(),
             'surname' => $this->getSurname(),
-            'nationality' => $this->getNationality()->getUniqueId()
+            'nationality' => $this->getNationality()->getUniqueId(),
+            'hobbies' => $hobbiesUniqueIds
         ];
     }
 
@@ -154,6 +175,11 @@ class Record
     public function getNationality() : SingleForeignRecord
     {
         return $this->nationality;
+    }
+
+    public function getHobbies() : array
+    {
+        return $this->hobbies;
     }
 }
 

@@ -73,6 +73,7 @@ session_start();
  * Initialize Record and ForeignRecord demo data
  */
 \PhpAjaxFormDemo\Data\SingleForeignRecord::initDemoData();
+\PhpAjaxFormDemo\Data\MultiForeignRecord::initDemoData();
 \PhpAjaxFormDemo\Data\Record::initDemoData();
 
 ?>

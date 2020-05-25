@@ -5,8 +5,8 @@ namespace PhpAjaxFormDemo\Data;
 use JsonSerializable;
 
 /**
- * Single foreign record (nationality) demo mockup. Used for demonstating 
- * single-value foreign attribute and HTML single 'select' tag population and 
+ * Multi foreign record (hobby) demo mockup. Used for demonstating 
+ * single-value foreign attribute and HTML multiple 'select' tag population and 
  * selection.
  * 
  * @package ajax-form-demo
@@ -16,12 +16,12 @@ use JsonSerializable;
  * @version 0.0.1
  */
 
-class SingleForeignRecord
+class MultiForeignRecord
     implements JsonSerializable
 {
 
     /**
-     * SingleForeignRecord attributes.
+     * MultiForeignRecord attributes.
      * 
      * @var int $uniqueId
      * @var string $name
@@ -54,12 +54,16 @@ class SingleForeignRecord
     public static function initDemoData() : void
     {
         self::$data = array(
-            1 => new self(1, 'Spain'),
-            2 => new self(2, 'France'),
-            3 => new self(3, 'United Kingdom'),
-            4 => new self(4, 'Germany'),
-            5 => new self(5, 'Italy'),
-            6 => new self(6, 'Belgium')
+            1 => new self(1, 'Sports'),
+            2 => new self(2, 'Music'),
+            3 => new self(3, 'Literature'),
+            4 => new self(4, 'Nature'),
+            5 => new self(5, 'Traveling'),
+            6 => new self(6, 'Socializing'),
+            7 => new self(7, 'Painting'),
+            8 => new self(8, 'Dancing'),
+            9 => new self(9, 'Reading'),
+            10 => new self(10, 'Writing')
         );
     }
 
@@ -74,7 +78,7 @@ class SingleForeignRecord
     }
 
     /**
-     * Checks if a SingleForeignRecord exists by a given id.
+     * Checks if a MultiForeignRecord exists by a given id.
      * 
      * @param int $uniqueId
      * 
@@ -86,13 +90,13 @@ class SingleForeignRecord
     }
 
     /**
-     * Retrieves a SingleForeignRecord by a given id.
+     * Retrieves a MultiForeignRecord by a given id.
      * 
      * @requires Id exists.
      * 
      * @param int $uniqueId
      * 
-     * @return \PhpAjaxFormDemo\Data\SingleForeignRecord
+     * @return \PhpAjaxFormDemo\Data\MultiForeignRecord
      */
     public static function getById(int $uniqueId) : self
     {
@@ -113,7 +117,7 @@ class SingleForeignRecord
 
     /**
      * 
-     * SingleForeignRecord attribute getters.
+     * MultiForeignRecord attribute getters.
      * 
      */
 

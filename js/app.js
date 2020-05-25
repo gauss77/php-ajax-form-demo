@@ -51,27 +51,30 @@ var aux = {};
 
 /**
  * Retrieves a form's data and converts it to a JSON string
+ * 
+ * @param {jQuery} $form
  */
 aux.jQueryFormToJsonString = ($form) =>
 {
     var resultObject = {};
 
-    // Obtener objeto DOM del formulario
-    const form = $form[0];
+    // Get form inputs' values
+    const formArray = $form.serializeArray();
 
-    // Obtener datos del formulario
-    var formData = new FormData(form);
+    // Transfer data
+    for (i = 0; i < formArray.length; i++) {
+        const key = formArray[i].name;
+        const value = formArray[i].value;
 
-    // Recoger todos los campos
-    for (const [key, value] of formData.entries()) {
-        // Permitir que haya varios valores para campos con el mismo atributo 
-        // 'name' (y convertir estos a arrays)
+        // If key was already added
         if (resultObject[key]) {
+            // If position was already an array
             if (Array.isArray(resultObject[key])) {
                 resultObject[key].push(value);
             } else {
-                const prev = resultObject[key];
-                resultObject[key] = [ prev, value ];
+                // Else, create an array and insert existing and new values
+                const existing = resultObject[key];
+                resultObject[key] = [ existing, value ];
             }
         } else {
             resultObject[key] = value;
@@ -97,6 +100,17 @@ aux.findObjectInArray = (array, attributeName, attributeValue) =>
     }
     
     return null;
+}
+
+/**
+ * Empties all form controls
+ * 
+ * @param {jQuery} $form
+ */
+aux.doEmptyForm = ($form) =>
+{
+    $form.find('input, select, textarea').val();
+    $form.find('select, textarea').empty();
 }
 
 /**
@@ -177,6 +191,9 @@ $(() => {
                         console.log(result);
                     }
 
+                    // Pre-empty form
+                    aux.doEmptyForm($modal);
+
                     // Array for late prevention
                     var linkRels = [];
 
@@ -196,12 +213,8 @@ $(() => {
                                 $select.append(option);
                             });
 
-                            // Then select the option by id
-                            if (link.selectType === 'single') {
-                                $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
-                            } else if (link.selectType === 'multi') {
-                                // .val(['1', '2']);
-                            }
+                            // Then select the option by id (same for single and multi selects)
+                            $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
                         });
                     }
 
@@ -242,20 +255,21 @@ $(() => {
         
         $loadingProgressBar.fadeIn();
 
-        var $form = $(e.currentTarget);
-        var $modal = $form.closest('.ajax-modal');
+        const $form = $(e.currentTarget);
+        const formDataJson = aux.jQueryFormToJsonString($form);
+        const $modal = $form.closest('.ajax-modal');
         
-        var onSuccessEventName = $modal.data('ajax-on-success-event-name');
-        var onSuccessEventTarget = $modal.data('ajax-on-success-event-target');
-        var submitUrl = $modal.data('ajax-submit-url');
-        var submitMethod = $modal.data('ajax-submit-method');
+        const onSuccessEventName = $modal.data('ajax-on-success-event-name');
+        const onSuccessEventTarget = $modal.data('ajax-on-success-event-target');
+        const submitUrl = $modal.data('ajax-submit-url');
+        const submitMethod = $modal.data('ajax-submit-method');
 
         $.ajax({
             url: submitUrl,
             type: submitMethod,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            data: aux.jQueryFormToJsonString($form),
+            data: formDataJson,
             success: (result) => {
                 if (! autoconf.APP_PRODUCTION) {
                     console.log('.ajax-modal form submit AJAX success');
@@ -297,7 +311,7 @@ $(() => {
      * AJAX form modal empty on hide
      */
     $('.ajax-modal').on('hidden.bs.modal', (e) => {
-        $(e.currentTarget).find('input, select, textarea').val();
+        aux.doEmptyForm($(e.currentTarget));
     });
 
     /**
@@ -318,12 +332,24 @@ $(() => {
 
         const nationalityName = aux.findObjectInArray(nationalityLinkData, 'uniqueId', result[targetObjectName].nationality).name;
 
+        // Get hobbies names
+        const hobbiesLinkData = aux.findObjectInArray(result.links, 'rel', 'hobbies').data;
+
+        const hobbies = result[targetObjectName].hobbies;
+        var hobbiesNames = '';
+
+        for (var i = 0; i < hobbies.length; i++) {
+            hobbiesNames += aux.findObjectInArray(hobbiesLinkData, 'uniqueId', hobbies[i]).name + ' ';
+        }
+
+        // Update list row
+
         const $list = $(e.currentTarget);
         const $row = $list.find('tr[data-unique-id="' + uniqueId + '"]');
 
         $row.find('td[data-col-name="name"]').text(name);
         $row.find('td[data-col-name="surname"]').text(surname);
         $row.find('td[data-col-name="nationality"]').text(nationalityName);
-        console.log(nationalityName);
+        $row.find('td[data-col-name="hobbies"]').text(hobbiesNames);
     });
 });

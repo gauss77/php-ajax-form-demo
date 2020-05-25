@@ -2,6 +2,7 @@
 
 namespace PhpAjaxFormDemo\Forms;
 
+use PhpAjaxFormDemo\Data\MultiForeignRecord;
 use PhpAjaxFormDemo\Data\SingleForeignRecord;
 use PhpAjaxFormDemo\Forms\AjaxForm;
 use PhpAjaxFormDemo\Data\Record;
@@ -93,14 +94,22 @@ class RecordUpdate extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            SingleForeignRecord::getAll()
+            array_values(SingleForeignRecord::getAll()) // Unkey array
+        );
+
+        // Hobbies HATEOAS formalization
+        $hobbiesLink = AjaxForm::generateHateoasSelectLink(
+            'hobbies',
+            'multi',
+            array_values(MultiForeignRecord::getAll()) // Unkey array
         );
 
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
             'links' => array(
-                $nationalityLink
+                $nationalityLink,
+                $hobbiesLink
             ),
             self::TARGET_OBJECT_NAME => $record
         );
@@ -143,6 +152,7 @@ class RecordUpdate extends AjaxForm
         $name = $data['name'] ?? null;
         $surname = $data['surname'] ?? null;
         $nationality = $data['nationality'] ?? null;
+        $hobbies = $data['hobbies'] ?? null;
         
         // Check all required fields were sent
         if (empty($uniqueId) || empty($name) || empty($surname) || empty($nationality)) {
@@ -162,6 +172,8 @@ class RecordUpdate extends AjaxForm
                 $errors[] = 'Missing param "nationality".';
             }
 
+            // Hobbies are optional
+
             $this->respondJsonError(400, $errors); // Bad request
         }
         
@@ -179,26 +191,58 @@ class RecordUpdate extends AjaxForm
             $this->respondJsonError(404, $errors); // Not found
         }
 
+        $nationalityObject = SingleForeignRecord::getById($nationality);
+
+        $hobbiesArray = array();
+
+        // Chech if any hobbies were sent
+        if ($hobbies) {
+            // Check if only one hobby was sent, and convert it
+            if (! is_array($hobbies)) {
+                $hobbies = array($hobbies);
+            }
+
+            // Check MultiForeignRecords (hobbies)' uniqueIds are valid
+            foreach ($hobbies as $hobbie) {
+                if (! MultiForeignRecord::existsById($hobbie)) {
+                    $errors[] = 'MultiForeignRecord (hobbie) with "uniqueId" "' . $uniqueId . '" not found.';
+
+                    $this->respondJsonError(404, $errors); // Not found
+                }
+
+                $hobbiesArray[] = MultiForeignRecord::getById($hobbie);
+            }
+        }
+        
         // In real projects, data update would be here.
         $record = new Record(
             $uniqueId,
             $name,
             $surname,
-            SingleForeignRecord::getById($nationality)
+            $nationalityObject,
+            $hobbiesArray
         );
 
         // Nationality HATEOAS formalization
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            SingleForeignRecord::getAll()
+            array($record->getNationality()) // Array wrapping needed
+        );
+
+        // Hobbies HATEOAS formalization
+        $hobbiesLink = AjaxForm::generateHateoasSelectLink(
+            'hobbies',
+            'multi',
+            $record->getHobbies() // No array wrapping needed
         );
 
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
             'links' => array(
-                $nationalityLink
+                $nationalityLink,
+                $hobbiesLink
             ),
             self::TARGET_OBJECT_NAME => $record
         );

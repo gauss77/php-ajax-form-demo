@@ -12,6 +12,7 @@
 
 require_once('classes/init.php');
 
+use PhpAjaxFormDemo\Data\Record;
 use PhpAjaxFormDemo\Forms\RecordRead;
 use PhpAjaxFormDemo\Forms\RecordUpdate;
 
@@ -96,33 +97,42 @@ $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
                                     <th scope="col">Id</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
+                                    <th scope="col">Nationality</th>
+                                    <th scope="col">Hobbies</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-unique-id="23">
-                                    <td scope="row">23</td>
-                                    <td data-col-name="name">Pedro</td>
-                                    <td data-col-name="surname">Martínez Fernández</td>
-                                    <td data-col-name="nationality">France</td>
-                                    <td>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="23">Read</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="23">Update</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="23">Delete</button>
-                                    </td>
-                                </tr>
+                                <?php
 
-                                <tr data-unique-id="98">
-                                    <td scope="row">98</td>
-                                    <td data-col-name="name">Sandra</td>
-                                    <td data-col-name="surname">Alarcón Molina</td>
-                                    <td data-col-name="nationality">Italy</td>
-                                    <td>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="98">Read</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="98">Update</button>
-                                        <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-delete" data-ajax-unique-id="98">Delete</button>
-                                    </td>
-                                </tr>
+foreach (Record::getAll() as $record) {
+    $uniqueId = $record->getUniqueId();
+    $name = $record->getName();
+    $surname = $record->getSurname();
+    $nationality = $record->getNationality()->getName();
+
+    $hobbies = '';
+    foreach ($record->getHobbies() as $hobbie) {
+        $hobbies .= $hobbie->getName() . ' ';
+    }
+
+    echo <<< HTML
+    <tr data-unique-id="$uniqueId">
+        <td scope="row">$uniqueId</td>
+        <td data-col-name="name">$name</td>
+        <td data-col-name="surname">$surname</td>
+        <td data-col-name="nationality">$nationality</td>
+        <td data-col-name="hobbies">$hobbies</td>
+        <td>
+            <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-read" data-ajax-unique-id="$uniqueId">Read</button>
+            <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-update" data-ajax-unique-id="$uniqueId">Update</button>
+            <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-delete" data-ajax-unique-id="$uniqueId">Delete</button>
+        </td>
+    </tr>
+    HTML;
+}
+
+                                ?>
                             </tbody>
                         </table>
                     </div>
