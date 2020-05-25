@@ -58,6 +58,35 @@ class RecordUpdate extends AjaxForm
         );
     }
 
+    public function generateFormInputs() : string
+    {
+        $html = <<< HTML
+        <input type="hidden" name="uniqueId">
+        <div class="form-group">
+            <label for="control-name">Name</label>
+            <input name="name" type="text" class="form-control" id="control-name" aria-describedby="control-name-help" placeholder="Name">
+            <small id="control-name-help" class="form-text text-muted">Please fill the name.</small>
+        </div>
+        <div class="form-group">
+            <label for="control-surname">Surname</label>
+            <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Surname">
+            <small id="control-surname-help" class="form-text text-muted">Please fill the surname.</small>
+        </div>
+        <div class="form-group">
+            <label for="control-nationality">Nationality</label>
+            <select name="nationality" class="form-control" id="control-nationality">
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="control-hobbies">Hobbies</label>
+            <select name="hobbies" class="form-control" id="control-hobbies" multiple="multiple">
+            </select>
+        </div>
+        HTML;
+
+        return $html;
+    }
+
     protected function getDefaultData(array $requestData) : array
     {
         // Check that uniqueId was provided
@@ -94,14 +123,14 @@ class RecordUpdate extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array_values(SingleForeignRecord::getAll()) // Unkey array
+            SingleForeignRecord::getAll()
         );
 
         // Hobbies HATEOAS formalization
         $hobbiesLink = AjaxForm::generateHateoasSelectLink(
             'hobbies',
             'multi',
-            array_values(MultiForeignRecord::getAll()) // Unkey array
+            MultiForeignRecord::getAll()
         );
 
         // Map data to match placeholder inputs' names
@@ -115,35 +144,6 @@ class RecordUpdate extends AjaxForm
         );
 
         return $responseData;
-    }
-
-    public function generateFormInputs() : string
-    {
-        $html = <<< HTML
-        <input type="hidden" name="uniqueId">
-        <div class="form-group">
-            <label for="control-name">Name</label>
-            <input name="name" type="text" class="form-control" id="control-name" aria-describedby="control-name-help" placeholder="Name">
-            <small id="control-name-help" class="form-text text-muted">Please fill the name.</small>
-        </div>
-        <div class="form-group">
-            <label for="control-surname">Surname</label>
-            <input name="surname" type="text" class="form-control" id="control-surname" aria-describedby="control-surname-help" placeholder="Surname">
-            <small id="control-surname-help" class="form-text text-muted">Please fill the surname.</small>
-        </div>
-        <div class="form-group">
-            <label for="control-nationality">Nationality</label>
-            <select name="nationality" class="form-control" id="control-nationality">
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="control-hobbies">Hobbies</label>
-            <select name="hobbies" class="form-control" id="control-hobbies" multiple="multiple">
-            </select>
-        </div>
-        HTML;
-
-        return $html;
     }
 
     public function processSubmit(array $data = array()) : void
@@ -227,14 +227,14 @@ class RecordUpdate extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array($record->getNationality()) // Array wrapping needed
+            $record->getNationality()
         );
 
         // Hobbies HATEOAS formalization
         $hobbiesLink = AjaxForm::generateHateoasSelectLink(
             'hobbies',
             'multi',
-            $record->getHobbies() // No array wrapping needed
+            $record->getHobbies()
         );
 
         // Map data to match placeholder inputs' names

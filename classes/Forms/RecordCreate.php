@@ -64,14 +64,14 @@ class RecordCreate extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array_values(SingleForeignRecord::getAll()) // Unkey array
+            SingleForeignRecord::getAll()
         );
 
         // Hobbies HATEOAS formalization
         $hobbiesLink = AjaxForm::generateHateoasSelectLink(
             'hobbies',
             'multi',
-            array_values(MultiForeignRecord::getAll()) // Unkey array
+            MultiForeignRecord::getAll()
         );
 
         // Map data to match placeholder inputs' names
@@ -190,14 +190,14 @@ class RecordCreate extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array($record->getNationality()) // Array wrapping needed
+            $record->getNationality()
         );
 
         // Hobbies HATEOAS formalization
         $hobbiesLink = AjaxForm::generateHateoasSelectLink(
             'hobbies',
             'multi',
-            $record->getHobbies() // No array wrapping needed
+            $record->getHobbies()
         );
 
         // Map data to match placeholder inputs' names

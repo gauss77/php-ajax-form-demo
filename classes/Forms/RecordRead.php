@@ -81,14 +81,14 @@ class RecordRead extends AjaxForm
         $nationalityLink = AjaxForm::generateHateoasSelectLink(
             'nationality',
             'single',
-            array($record->getNationality()) // Array wrapping needed
+            $record->getNationality()
         );
 
         // Hobbies HATEOAS formalization
         $hobbiesLink = AjaxForm::generateHateoasSelectLink(
             'hobbies',
             'multi',
-            $record->getHobbies() // No array wrapping needed
+            $record->getHobbies()
         );
 
         // Map data to match placeholder inputs' names

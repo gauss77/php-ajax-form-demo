@@ -128,18 +128,18 @@ abstract class AjaxForm
     public function setOnSuccess(
         string $onSuccessEventName,
         string $onSuccessEventTarget
-    )
+    ) : void
     {
         $this->onSuccessEventName = $onSuccessEventName;
         $this->onSuccessEventTarget = $onSuccessEventTarget;
     }
 
-    public function setReadOnlyTrue()
+    public function setReadOnlyTrue() : void
     {
         $this->readOnly = true;
     }
 
-    public function isReadOnly()
+    public function isReadOnly() : bool
     {
         return $this->readOnly;
     }
@@ -206,7 +206,7 @@ abstract class AjaxForm
     {
         http_response_code($httpCode);
 
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
 
         // This should be the only echo in all the code
         echo json_encode($data);
@@ -425,17 +425,20 @@ abstract class AjaxForm
      * @param string $selectType 'multi' for multiple select, 'single' for 
      *                           single select (interpreted in Bootstrap modal
      *                           handling).
-     * @param array $data
+     * @param mixed $data
      * 
      * @return stdClass Object ready for JSON serialization.
      */
-    public static function generateHateoasSelectLink(string $rel, string $selectType, array $data) : stdClass
+    public static function generateHateoasSelectLink(string $rel, string $selectType, $data) : stdClass
     {
         $link = new stdClass();
 
         $link->rel = $rel;
         $link->selectType = $selectType;
-        $link->data = $data;
+
+        if (! is_array($data)) $data = array($data); // Ensure it is an array
+
+        $link->data = array_values($data); // Ensure array is unkeyed
 
         return $link;
     }
