@@ -4,6 +4,7 @@ namespace PhpAjaxFormDemo\Forms;
 
 use PhpAjaxFormDemo\Forms\AjaxForm;
 use PhpAjaxFormDemo\Data\Record;
+use PhpAjaxFormDemo\Data\SingleForeignRecord;
 
 /**
  * AJAX form example class: record read (no submission expected)
@@ -75,12 +76,20 @@ class RecordRead extends AjaxForm
 
         $record = Record::getById($uniqueId);
 
+        // Nationality HATEOAS formalization
+        $nationalityLink = AjaxForm::generateHateoasSelectLink(
+            'nationality',
+            'single',
+            array($record->getNationality())
+        );
+
         // Map data to match placeholder inputs' names
         $responseData = array(
             'status' => 'ok',
-            'uniqueId' => $record->getUniqueId(),
-            'name' => $record->getName(),
-            'surname' => $record->getSurname()
+            'links' => array(
+                $nationalityLink
+            ),
+            self::TARGET_OBJECT_NAME => $record
         );
 
         return $responseData;
@@ -97,6 +106,16 @@ class RecordRead extends AjaxForm
         <div class="form-group">
             <label>Surname</label>
             <input name="surname" type="text" class="form-control" placeholder="Surname" disabled="disabled">
+        </div>
+        <div class="form-group">
+            <label>Nationality</label>
+            <select name="nationality" class="form-control" id="control-nationality" disabled="disabled">
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Hobbies</label>
+            <select name="hobbies" class="form-control" id="control-hobbies" multiple="multiple" disabled="disabled">
+            </select>
         </div>
         HTML;
 

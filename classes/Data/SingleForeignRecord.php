@@ -82,7 +82,7 @@ class SingleForeignRecord
      */
     public static function existsById(int $uniqueId) : bool
     {
-        return $uniqueId === 23 || $uniqueId === 98;
+        return $uniqueId >= 1 && $uniqueId <= 6;
     }
 
     /**

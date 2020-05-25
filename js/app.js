@@ -82,6 +82,24 @@ aux.jQueryFormToJsonString = ($form) =>
 }
 
 /**
+ * Finds an object with a specific attribute in an array.
+ * 
+ * @param {array} array
+ * @param {string} attributeName
+ * @param {string} attributeValue
+ */
+aux.findObjectInArray = (array, attributeName, attributeValue) =>
+{
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][attributeName] === attributeValue) {
+            return array[i];
+        }
+    }
+    
+    return null;
+}
+
+/**
  * jQuery on document ready
  */
 $(() => {
@@ -182,9 +200,14 @@ $(() => {
                             if (link.selectType === 'single') {
                                 $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
                             } else if (link.selectType === 'multi') {
+                                // .val(['1', '2']);
                             }
                         });
                     }
+
+                    // Fill form id and CSRF token
+                    $modal.find('input[name="form-id"]').val(result['form-id']);
+                    $modal.find('input[name="csrf-token"]').val(result['csrf-token']);
                     
                     // Fill form placeholder inputs
                     for (const name in resultData) {
@@ -201,8 +224,11 @@ $(() => {
                 error: (result) => {
                     // Hide loader and log error
                     $loadingProgressBar.fadeOut();
-                    console.log('#btn-ajax-modal-fire click AJAX error');
-                    console.error(result);
+
+                    if (! autoconf.APP_PRODUCTION) {
+                        console.log('#btn-ajax-modal-fire click AJAX error');
+                        console.error(result);
+                    }
                 }
             });
         }
@@ -236,9 +262,15 @@ $(() => {
                     console.log(result);
                 }
 
-                // TODO: update list
+                // Copy the modal so data is not emptied on hidden.bs.modal
+                const $modalData = $modal;
+
+                // Trigger success event on the target
                 if (onSuccessEventName && onSuccessEventTarget) {
-                    $(onSuccessEventTarget).trigger(onSuccessEventName, result);
+                    $(onSuccessEventTarget).trigger(onSuccessEventName, {
+                        modalData: $modalData,
+                        result: result
+                    });
                 }
 
                 $modal.modal('hide');
@@ -271,11 +303,27 @@ $(() => {
     /**
      * Handle record update success (ON_SUCCESS_EVENT_*)
      */
-    $('#record-list-table').on('updated.record', (e, result) => {
-        var $list = $(e.currentTarget);
-        var uniqueId = result.uniqueId;
-        var $tableRow = $list.find('tr[data-unique-id="' + uniqueId + '"]');
-        $tableRow.find('td[data-col-name="name"]').text(result.name);
-        $tableRow.find('td[data-col-name="surname"]').text(result.surname);
+    $('#record-list-table').on('updated.record', (e, params) => {
+        const $modalData = params.modalData;
+        const result = params.result;
+
+        const targetObjectName = $modalData.data('ajax-target-object-name');
+        
+        const uniqueId = result[targetObjectName].uniqueId;
+        const name = result[targetObjectName].name;
+        const surname = result[targetObjectName].surname;
+
+        // Get nationality name (first find the link, then the object)
+        const nationalityLinkData = aux.findObjectInArray(result.links, 'rel', 'nationality').data;
+
+        const nationalityName = aux.findObjectInArray(nationalityLinkData, 'uniqueId', result[targetObjectName].nationality).name;
+
+        const $list = $(e.currentTarget);
+        const $row = $list.find('tr[data-unique-id="' + uniqueId + '"]');
+
+        $row.find('td[data-col-name="name"]').text(name);
+        $row.find('td[data-col-name="surname"]').text(surname);
+        $row.find('td[data-col-name="nationality"]').text(nationalityName);
+        console.log(nationalityName);
     });
 });

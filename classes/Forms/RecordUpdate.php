@@ -129,7 +129,7 @@ class RecordUpdate extends AjaxForm
         </div>
         <div class="form-group">
             <label for="control-hobbies">Hobbies</label>
-            <select name="hobbies" class="form-control" id="control-hobbies" multiple>
+            <select name="hobbies" class="form-control" id="control-hobbies" multiple="multiple">
             </select>
         </div>
         HTML;
@@ -142,36 +142,65 @@ class RecordUpdate extends AjaxForm
         $uniqueId = $data['uniqueId'] ?? null;
         $name = $data['name'] ?? null;
         $surname = $data['surname'] ?? null;
-
+        $nationality = $data['nationality'] ?? null;
+        
         // Check all required fields were sent
-        if (empty($uniqueId) || empty($name) || empty($surname)) {
+        if (empty($uniqueId) || empty($name) || empty($surname) || empty($nationality)) {
             if (empty($uniqueId)) {
-                $errors[] = 'Missing param "uniqueId"';
+                $errors[] = 'Missing param "uniqueId".';
             }
 
             if (empty($name)) {
-                $errors[] = 'Missing param "name"';
+                $errors[] = 'Missing param "name".';
             }
 
             if (empty($surname)) {
-                $errors[] = 'Missing param "surname"';
+                $errors[] = 'Missing param "surname".';
+            }
+
+            if (empty($nationality)) {
+                $errors[] = 'Missing param "nationality".';
             }
 
             $this->respondJsonError(400, $errors); // Bad request
         }
         
-        // Check uniqueId is valid
+        // Check Record's uniqueId is valid
         if (! Record::existsById($uniqueId)) {
             $errors[] = 'Record with "uniqueId" "' . $uniqueId . '" not found.';
 
             $this->respondJsonError(404, $errors); // Not found
         }
 
+        // Check SingleForeignRecord (nationality)'s uniqueId is valid
+        if (! SingleForeignRecord::existsById($nationality)) {
+            $errors[] = 'SingleForeignRecord (nationality) with "uniqueId" "' . $uniqueId . '" not found.';
+
+            $this->respondJsonError(404, $errors); // Not found
+        }
+
+        // In real projects, data update would be here.
+        $record = new Record(
+            $uniqueId,
+            $name,
+            $surname,
+            SingleForeignRecord::getById($nationality)
+        );
+
+        // Nationality HATEOAS formalization
+        $nationalityLink = AjaxForm::generateHateoasSelectLink(
+            'nationality',
+            'single',
+            SingleForeignRecord::getAll()
+        );
+
+        // Map data to match placeholder inputs' names
         $responseData = array(
-            'messages' => array('Record updated successfully'),
-            'uniqueId' => $uniqueId,
-            'name' => $name,
-            'surname' => $surname
+            'status' => 'ok',
+            'links' => array(
+                $nationalityLink
+            ),
+            self::TARGET_OBJECT_NAME => $record
         );
 
         $this->respondJsonOk($responseData);

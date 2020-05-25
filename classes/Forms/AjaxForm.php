@@ -90,7 +90,7 @@ abstract class AjaxForm
      * @var string CSRF_TOKEN_FIELD      CSRF token field name.
      */
     private const CSRF_PREFIX = 'csrf';
-    private const CSRF_TOKEN_FIELD = 'csrfToken';
+    private const CSRF_TOKEN_FIELD = 'csrf-token';
 
     /**
      * @var string JSON_ADMITTED_CONTENT_TYPE JSON admitted content type.

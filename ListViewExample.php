@@ -104,6 +104,7 @@ $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
                                     <td scope="row">23</td>
                                     <td data-col-name="name">Pedro</td>
                                     <td data-col-name="surname">Martínez Fernández</td>
+                                    <td data-col-name="nationality">France</td>
                                     <td>
                                         <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="23">Read</button>
                                         <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="23">Update</button>
@@ -115,6 +116,7 @@ $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
                                     <td scope="row">98</td>
                                     <td data-col-name="name">Sandra</td>
                                     <td data-col-name="surname">Alarcón Molina</td>
+                                    <td data-col-name="nationality">Italy</td>
                                     <td>
                                         <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-read" data-ajax-unique-id="98">Read</button>
                                         <button class="btn-ajax-modal-fire btn btn-sm btn-primary" data-ajax-form-id="record-update" data-ajax-unique-id="98">Update</button>
