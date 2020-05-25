@@ -13,10 +13,12 @@
 require_once('classes/init.php');
 
 use PhpAjaxFormDemo\Data\Record;
+use PhpAjaxFormDemo\Forms\RecordCreate;
 use PhpAjaxFormDemo\Forms\RecordDelete;
 use PhpAjaxFormDemo\Forms\RecordRead;
 use PhpAjaxFormDemo\Forms\RecordUpdate;
 
+$recordCreateForm = new RecordCreate();
 $recordReadForm = new RecordRead();
 $recordUpdateForm = new RecordUpdate();
 $recordDeleteForm = new RecordDelete();
@@ -90,7 +92,7 @@ $v = APP_PRODUCTION ? '' : '?v=0.0.0' . time();
             <div class="row">
                 <div class="col"></div>
                 <div class="col-10">
-                    <button id="btn-record-create-modal-open" class="btn btn-primary">Create record</button>
+                    <button class="btn-ajax-modal-fire btn btn-primary mb-1" data-ajax-form-id="record-create">Create record</button>
                     
                     <div class="card mt-3">
                         <table id="record-list-table" class="table table-borderless table-striped">
@@ -143,6 +145,9 @@ foreach (Record::getAll() as $record) {
                 <div class="col"></div>
             </div>
         </div>
+
+        <!-- Record create modal -->
+        <?php echo $recordCreateForm->generateModal(); ?>
 
         <!-- Record read modal -->
         <?php echo $recordReadForm->generateModal(); ?>

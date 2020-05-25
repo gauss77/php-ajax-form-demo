@@ -110,7 +110,7 @@ aux.findObjectInArray = (array, attributeName, attributeValue) =>
  */
 aux.doEmptyForm = ($form) =>
 {
-    $form.find('input, select, textarea').val();
+    $form.find('input, select, textarea').val('');
     $form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
     $form.find('select, textarea').empty();
 }
@@ -215,8 +215,10 @@ $(() => {
                                 $select.append(option);
                             });
 
-                            // Then select the option by id (same for single and multi selects)
-                            $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
+                            // Then select the option by id (same for single and multi selects) (first check if any object data was sent)
+                            if (resultData) {
+                                $modal.find('select[name="' + link.rel + '"]').val(resultData[link.rel]);
+                            }
                         });
                     }
 
@@ -301,7 +303,7 @@ $(() => {
                 $loadingProgressBar.fadeOut();
                 toast.error('There was an error processing the form.');
  
-                if (result.responseJSON.messages) {
+                if (result.responseJSON && result.responseJSON.messages) {
                     result.responseJSON.messages.forEach(m => toast.error(m));
                 }
 
@@ -318,6 +320,56 @@ $(() => {
      */
     $('.ajax-modal').on('hidden.bs.modal', (e) => {
         aux.doEmptyForm($(e.currentTarget));
+    });
+
+    /**
+     * Handle record create success (ON_SUCCESS_EVENT_*)
+     */
+    $('#record-list-table').on('created.record', (e, params) => {
+        const $modalData = params.modalData;
+        const result = params.result;
+
+        const targetObjectName = $modalData.data('ajax-target-object-name');
+        
+        const uniqueId = result[targetObjectName].uniqueId;
+        const name = result[targetObjectName].name;
+        const surname = result[targetObjectName].surname;
+
+        // Get nationality name (first find the link, then the object)
+        const nationalityLinkData = aux.findObjectInArray(result.links, 'rel', 'nationality').data;
+
+        const nationalityName = aux.findObjectInArray(nationalityLinkData, 'uniqueId', result[targetObjectName].nationality).name;
+
+        // Get hobbies names
+        const hobbiesLinkData = aux.findObjectInArray(result.links, 'rel', 'hobbies').data;
+
+        const hobbies = result[targetObjectName].hobbies;
+        var hobbiesNames = '';
+
+        for (var i = 0; i < hobbies.length; i++) {
+            hobbiesNames += aux.findObjectInArray(hobbiesLinkData, 'uniqueId', hobbies[i]).name + ' ';
+        }
+
+        // Update list row
+
+        const $list = $(e.currentTarget);
+        const $row = $list.find('tr[data-unique-id="' + uniqueId + '"]');
+
+        $rowHtml = '\
+        <tr data-unique-id="' + uniqueId + '">\
+            <td scope="row">' + uniqueId + '</td>\
+            <td data-col-name="name">' + name + '</td>\
+            <td data-col-name="surname">' + surname + '</td>\
+            <td data-col-name="nationality">' + nationalityName + '</td>\
+            <td data-col-name="hobbies">' + hobbiesNames + '</td>\
+            <td>\
+                <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-read" data-ajax-unique-id="' + uniqueId + '">Read</button>\
+                <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-update" data-ajax-unique-id="' + uniqueId + '">Update</button>\
+                <button class="btn-ajax-modal-fire btn btn-sm btn-primary mb-1" data-ajax-form-id="record-delete" data-ajax-unique-id="' + uniqueId + '">Delete</button>\
+            </td>\
+        </tr>';
+
+        $list.append($rowHtml);
     });
 
     /**

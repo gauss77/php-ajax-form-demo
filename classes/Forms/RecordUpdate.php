@@ -186,7 +186,7 @@ class RecordUpdate extends AjaxForm
 
         // Check SingleForeignRecord (nationality)'s uniqueId is valid
         if (! SingleForeignRecord::existsById($nationality)) {
-            $errors[] = 'Nationality not found.'; // with "uniqueId" "' . $uniqueId . '" 
+            $errors[] = 'Nationality not found.'; // with "uniqueId" "' . $nationality . '" 
 
             $this->respondJsonError(404, $errors); // Not found
         }
